@@ -396,7 +396,7 @@ def get_translation():
 @app.route('/', methods=['GET'])
 def index():
     t, lang = get_translation()
-    return render_template_string(INDEX_HTML, t=t, lang=lang)
+    return render_template_string(INDEX_HTML, t=t, lang=lang, translations=translations)
 
 @app.route('/generate', methods=['POST'])
 def generate_pdf():
@@ -626,6 +626,9 @@ INDEX_HTML = '''
     text-align: center;
     padding: 0;
     user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   button {
@@ -939,6 +942,13 @@ PDF_HTML = '''
     border-top: 2px solid #000;
     font-weight: bold;
   }
+  .signature-img {
+    max-width: 200px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    margin-top: 20px;
+    display: inline-block;
+  }
 </style>
 </head>
 <body>
@@ -1018,9 +1028,9 @@ PDF_HTML = '''
   </table>
 
   {% if handtekening_data %}
-  <div style="margin-top: 60px;">
+  <div>
     <strong>{{ t.signature }}</strong><br />
-    <img src="{{ handtekening_data }}" alt="Handtekening" style="max-width: 200px;"/>
+    <img src="{{ handtekening_data }}" alt="Handtekening" class="signature-img"/>
   </div>
   {% endif %}
 
