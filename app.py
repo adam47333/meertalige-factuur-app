@@ -12,7 +12,6 @@ pdf_storage = {}
 
 translations = {
     'nl': {
-        'language_name': 'Nederlands',
         'title': 'Snelfactuurtje',
         'invoice_number': 'Factuurnummer',
         'date': 'Datum',
@@ -48,9 +47,9 @@ translations = {
         'client_name': 'Klantnaam',
         'language': 'Taal',
         'company_name': 'Bedrijfsnaam',
+        'language_name': 'Nederlands',
     },
     'en': {
-        'language_name': 'English',
         'title': 'Quick Invoice',
         'invoice_number': 'Invoice Number',
         'date': 'Date',
@@ -86,9 +85,9 @@ translations = {
         'client_name': 'Client Name',
         'language': 'Language',
         'company_name': 'Company Name',
+        'language_name': 'English',
     },
     'ar': {
-        'language_name': 'العربية',
         'title': 'فاتورة سريعة',
         'invoice_number': 'رقم الفاتورة',
         'date': 'التاريخ',
@@ -124,277 +123,10 @@ translations = {
         'client_name': 'اسم العميل',
         'language': 'اللغة',
         'company_name': 'اسم الشركة',
+        'language_name': 'العربية',
     },
-    'de': {
-        'language_name': 'Deutsch',
-        'title': 'Schnellrechnung',
-        'invoice_number': 'Rechnungsnummer',
-        'date': 'Datum',
-        'invoice_to': 'Rechnung an:',
-        'description': 'Beschreibung',
-        'quantity': 'Menge',
-        'price': 'Preis',
-        'vat_percent': 'MwSt%',
-        'amount': 'Betrag',
-        'subtotal': 'Zwischensumme (exkl. MwSt):',
-        'total_vat': 'Gesamt MwSt:',
-        'total': 'Gesamt (inkl. MwSt):',
-        'greeting': 'Mit freundlichen Grüßen,',
-        'signature': 'Unterschrift:',
-        'company_info': 'Firmendaten',
-        'client_info': 'Kundendaten',
-        'service': 'Dienstleistung',
-        'price_per_unit': 'Preis pro Einheit',
-        'add_service': 'Dienst hinzufügen',
-        'signature_label': 'Unterschrift',
-        'clear_signature': 'Unterschrift löschen',
-        'download_invoice': 'Rechnung öffnen',
-        'save_company': 'Firmendaten speichern',
-        'clear_company': 'Firmendaten löschen',
-        'upload_logo': 'Logo hochladen (optional)',
-        'street': 'Straße und Hausnummer',
-        'postcode': 'Postleitzahl',
-        'city': 'Stadt',
-        'country': 'Land',
-        'kvk': 'Handelsregisternummer',
-        'vat': 'USt-IdNr.',
-        'iban': 'IBAN',
-        'client_name': 'Kundenname',
-        'language': 'Sprache',
-        'company_name': 'Firmenname',
-    },
-    'fr': {
-        'language_name': 'Français',
-        'title': 'Facture rapide',
-        'invoice_number': 'Numéro de facture',
-        'date': 'Date',
-        'invoice_to': 'Facture à :',
-        'description': 'Description',
-        'quantity': 'Quantité',
-        'price': 'Prix',
-        'vat_percent': 'TVA%',
-        'amount': 'Montant',
-        'subtotal': 'Sous-total (HT):',
-        'total_vat': 'Total TVA:',
-        'total': 'Total (TTC):',
-        'greeting': 'Cordialement,',
-        'signature': 'Signature :',
-        'company_info': 'Informations sur l\'entreprise',
-        'client_info': 'Informations sur le client',
-        'service': 'Service',
-        'price_per_unit': 'Prix unitaire',
-        'add_service': 'Ajouter un service',
-        'signature_label': 'Signature',
-        'clear_signature': 'Effacer la signature',
-        'download_invoice': 'Ouvrir la facture',
-        'save_company': 'Enregistrer les informations de l\'entreprise',
-        'clear_company': 'Effacer les informations de l\'entreprise',
-        'upload_logo': 'Télécharger votre logo (optionnel)',
-        'street': 'Rue et numéro',
-        'postcode': 'Code postal',
-        'city': 'Ville',
-        'country': 'Pays',
-        'kvk': 'Numéro de registre du commerce',
-        'vat': 'Numéro de TVA',
-        'iban': 'IBAN',
-        'client_name': 'Nom du client',
-        'language': 'Langue',
-        'company_name': 'Nom de l\'entreprise',
-    },
-    'es': {
-        'language_name': 'Español',
-        'title': 'Factura rápida',
-        'invoice_number': 'Número de factura',
-        'date': 'Fecha',
-        'invoice_to': 'Factura para:',
-        'description': 'Descripción',
-        'quantity': 'Cantidad',
-        'price': 'Precio',
-        'vat_percent': 'IVA%',
-        'amount': 'Importe',
-        'subtotal': 'Subtotal (sin IVA):',
-        'total_vat': 'Total IVA:',
-        'total': 'Total (con IVA):',
-        'greeting': 'Saludos cordiales,',
-        'signature': 'Firma:',
-        'company_info': 'Datos de la empresa',
-        'client_info': 'Datos del cliente',
-        'service': 'Servicio',
-        'price_per_unit': 'Precio por unidad',
-        'add_service': 'Agregar servicio',
-        'signature_label': 'Firma',
-        'clear_signature': 'Borrar firma',
-        'download_invoice': 'Abrir factura',
-        'save_company': 'Guardar datos de la empresa',
-        'clear_company': 'Borrar datos de la empresa',
-        'upload_logo': 'Subir logo (opcional)',
-        'street': 'Calle y número',
-        'postcode': 'Código postal',
-        'city': 'Ciudad',
-        'country': 'País',
-        'kvk': 'Número de registro mercantil',
-        'vat': 'Número de IVA',
-        'iban': 'IBAN',
-        'client_name': 'Nombre del cliente',
-        'language': 'Idioma',
-        'company_name': 'Nombre de la empresa',
-    },
-    'pt': {
-        'language_name': 'Português',
-        'title': 'Fatura rápida',
-        'invoice_number': 'Número da fatura',
-        'date': 'Data',
-        'invoice_to': 'Fatura para:',
-        'description': 'Descrição',
-        'quantity': 'Quantidade',
-        'price': 'Preço',
-        'vat_percent': 'IVA%',
-        'amount': 'Valor',
-        'subtotal': 'Subtotal (sem IVA):',
-        'total_vat': 'Total IVA:',
-        'total': 'Total (com IVA):',
-        'greeting': 'Atenciosamente,',
-        'signature': 'Assinatura:',
-        'company_info': 'Informações da empresa',
-        'client_info': 'Informações do cliente',
-        'service': 'Serviço',
-        'price_per_unit': 'Preço por unidade',
-        'add_service': 'Adicionar serviço',
-        'signature_label': 'Assinatura',
-        'clear_signature': 'Limpar assinatura',
-        'download_invoice': 'Abrir fatura',
-        'save_company': 'Salvar informações da empresa',
-        'clear_company': 'Limpar informações da empresa',
-        'upload_logo': 'Carregar logo (opcional)',
-        'street': 'Rua e número',
-        'postcode': 'Código postal',
-        'city': 'Cidade',
-        'country': 'País',
-        'kvk': 'Número de registro comercial',
-        'vat': 'Número de IVA',
-        'iban': 'IBAN',
-        'client_name': 'Nome do cliente',
-        'language': 'Idioma',
-        'company_name': 'Nome da empresa',
-    },
-    'sv': {
-        'language_name': 'Svenska',
-        'title': 'Snabbfaktura',
-        'invoice_number': 'Fakturanummer',
-        'date': 'Datum',
-        'invoice_to': 'Faktura till:',
-        'description': 'Beskrivning',
-        'quantity': 'Antal',
-        'price': 'Pris',
-        'vat_percent': 'Moms%',
-        'amount': 'Belopp',
-        'subtotal': 'Delsumma (exkl. moms):',
-        'total_vat': 'Total moms:',
-        'total': 'Totalt (inkl. moms):',
-        'greeting': 'Med vänliga hälsningar,',
-        'signature': 'Signatur:',
-        'company_info': 'Företagsuppgifter',
-        'client_info': 'Kunduppgifter',
-        'service': 'Tjänst',
-        'price_per_unit': 'Pris per enhet',
-        'add_service': 'Lägg till tjänst',
-        'signature_label': 'Signatur',
-        'clear_signature': 'Rensa signatur',
-        'download_invoice': 'Öppna faktura',
-        'save_company': 'Spara företagsuppgifter',
-        'clear_company': 'Rensa företagsuppgifter',
-        'upload_logo': 'Ladda upp din logotyp (valfritt)',
-        'street': 'Gata och nummer',
-        'postcode': 'Postnummer',
-        'city': 'Stad',
-        'country': 'Land',
-        'kvk': 'Organisationsnummer',
-        'vat': 'Momsnummer',
-        'iban': 'IBAN',
-        'client_name': 'Kundnamn',
-        'language': 'Språk',
-        'company_name': 'Företagsnamn',
-    },
-    'tr': {
-        'language_name': 'Türkçe',
-        'title': 'Hızlı Fatura',
-        'invoice_number': 'Fatura Numarası',
-        'date': 'Tarih',
-        'invoice_to': 'Fatura Alıcısı:',
-        'description': 'Açıklama',
-        'quantity': 'Miktar',
-        'price': 'Fiyat',
-        'vat_percent': 'KDV%',
-        'amount': 'Tutar',
-        'subtotal': 'Ara Toplam (KDV Hariç):',
-        'total_vat': 'Toplam KDV:',
-        'total': 'Toplam (KDV Dahil):',
-        'greeting': 'Saygılarımla,',
-        'signature': 'İmza:',
-        'company_info': 'Şirket Bilgileri',
-        'client_info': 'Müşteri Bilgileri',
-        'service': 'Hizmet',
-        'price_per_unit': 'Birim Fiyat',
-        'add_service': 'Hizmet Ekle',
-        'signature_label': 'İmza',
-        'clear_signature': 'İmza Temizle',
-        'download_invoice': 'Faturayı Aç',
-        'save_company': 'Şirket Bilgilerini Kaydet',
-        'clear_company': 'Şirket Bilgilerini Temizle',
-        'upload_logo': 'Logonuzu Yükleyin (isteğe bağlı)',
-        'street': 'Sokak ve Numara',
-        'postcode': 'Posta Kodu',
-        'city': 'Şehir',
-        'country': 'Ülke',
-        'kvk': 'Ticaret Sicil Numarası',
-        'vat': 'KDV Numarası',
-        'iban': 'IBAN',
-        'client_name': 'Müşteri Adı',
-        'language': 'Dil',
-        'company_name': 'Şirket Adı',
-    },
-    'it': {
-        'language_name': 'Italiano',
-        'title': 'Fattura veloce',
-        'invoice_number': 'Numero fattura',
-        'date': 'Data',
-        'invoice_to': 'Fattura a:',
-        'description': 'Descrizione',
-        'quantity': 'Quantità',
-        'price': 'Prezzo',
-        'vat_percent': 'IVA%',
-        'amount': 'Importo',
-        'subtotal': 'Totale parziale (escl. IVA):',
-        'total_vat': 'Totale IVA:',
-        'total': 'Totale (incl. IVA):',
-        'greeting': 'Cordiali saluti,',
-        'signature': 'Firma:',
-        'company_info': 'Informazioni sull\'azienda',
-        'client_info': 'Informazioni cliente',
-        'service': 'Servizio',
-        'price_per_unit': 'Prezzo per unità',
-        'add_service': 'Aggiungi servizio',
-        'signature_label': 'Firma',
-        'clear_signature': 'Cancella firma',
-        'download_invoice': 'Apri fattura',
-        'save_company': 'Salva informazioni azienda',
-        'clear_company': 'Cancella informazioni azienda',
-        'upload_logo': 'Carica logo (opzionale)',
-        'street': 'Via e numero',
-        'postcode': 'CAP',
-        'city': 'Città',
-        'country': 'Paese',
-        'kvk': 'Numero di registrazione',
-        'vat': 'Partita IVA',
-        'iban': 'IBAN',
-        'client_name': 'Nome cliente',
-        'language': 'Lingua',
-        'company_name': 'Nome azienda',
-    }
+    # Voeg hier andere talen toe met 'language_name' veld
 }
-
-def format_currency(value):
-    return f"{value:,.2f} €".replace(',', 'X').replace('.', ',').replace('X', '.')
 
 def get_translation():
     lang = request.args.get('lang', 'nl').lower()
@@ -477,7 +209,6 @@ def generate_pdf():
                                               logo_data=logo_data,
                                               handtekening_data=handtekening_data,
                                               lang=lang,
-                                              format_currency=format_currency,
                                               enumerate=enumerate,
                                               datetime=datetime,
                                               timedelta=timedelta,
@@ -779,9 +510,9 @@ INDEX_HTML = '''
       <label>{{ t.service }}:</label>
       <input name='dienst_${dienstIndex}' required />
       <label>{{ t.quantity }}:</label>
-      <input name='aantal_${dienstIndex}' type='number' required />
+      <input name='aantal_${dienstIndex}' type='number' min='1' required />
       <label>{{ t.price_per_unit }}:</label>
-      <input name='prijs_${dienstIndex}' type='number' step='0.01' required />
+      <input name='prijs_${dienstIndex}' type='number' step='0.01' min='0' required />
       <label>{{ t.vat_percent }}:</label>
       <select name='btw_${dienstIndex}'>
         <option value='0'>0%</option>
@@ -954,38 +685,15 @@ PDF_HTML = '''
     border-collapse: collapse;
     font-size: 11pt;
   }
+  [dir="rtl"] .totals-table {
+    float: left;
+  }
   .totals-table td {
     padding: 6px 10px;
   }
   .totals-table tr.total-row td {
     border-top: 2px solid #000;
     font-weight: bold;
-  }
-  /* RTL fixes for Arabic */
-  [dir="rtl"] {
-    direction: rtl;
-    unicode-bidi: embed;
-  }
-  [dir="rtl"] .header {
-    flex-direction: row-reverse;
-    text-align: right;
-  }
-  [dir="rtl"] .company-details {
-    text-align: right;
-  }
-  [dir="rtl"] .client-details {
-    text-align: right;
-  }
-  [dir="rtl"] .invoice-info {
-    text-align: right;
-  }
-  [dir="rtl"] table th, [dir="rtl"] table td {
-    text-align: right !important;
-    padding-right: 15px;
-    padding-left: 5px;
-  }
-  [dir="rtl"] .totals-table {
-    float: left;
   }
   .signature {
     margin-top: 50px;
@@ -1055,9 +763,9 @@ PDF_HTML = '''
         <tr>
           <td>{{ i }}</td>
           <td>{{ dienst }}</td>
-          <td class="right">{{ "%.2f"|format(prijs).replace(".", ",") }} €</td>
+          <td class="right">{{ '%.2f' % prijs | replace('.', ',') }} €</td>
           <td class="right">{{ aantal }}</td>
-          <td class="right">{{ "%.2f"|format(incl).replace(".", ",") }} €</td>
+          <td class="right">{{ '%.2f' % incl | replace('.', ',') }} €</td>
           <td class="right">{{ btw_pct }}%</td>
         </tr>
       {% endfor %}
@@ -1067,15 +775,15 @@ PDF_HTML = '''
   <table class="totals-table">
     <tr>
       <td>{{ t.subtotal }}</td>
-      <td class="right">{{ "%.2f"|format(subtotal).replace(".", ",") }} €</td>
+      <td class="right">{{ '%.2f' % subtotal | replace('.', ',') }} €</td>
     </tr>
     <tr>
       <td>{{ t.total_vat }}</td>
-      <td class="right">{{ "%.2f"|format(total_vat).replace(".", ",") }} €</td>
+      <td class="right">{{ '%.2f' % total_vat | replace('.', ',') }} €</td>
     </tr>
     <tr class="total-row">
       <td>{{ t.total }}</td>
-      <td class="right">{{ "%.2f"|format(total).replace(".", ",") }} €</td>
+      <td class="right">{{ '%.2f' % total | replace('.', ',') }} €</td>
     </tr>
   </table>
 
