@@ -432,7 +432,6 @@ def generate_pdf():
 
         handtekening_data = request.form.get('handtekening')
 
-        # Berekeningen voor totaal
         subtotal = 0.0
         total_vat = 0.0
         for dienst, aantal, prijs, btw_pct in diensten:
