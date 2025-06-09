@@ -48,7 +48,7 @@ translations = {
         'language': 'Taal',
         'company_name': 'Bedrijfsnaam',
     },
-    # Voeg andere talen hier toe (zoals eerder beschreven) ...
+    # ... (andere talen blijven hetzelfde) ...
     'en': {
         'title': 'Quick Invoice',
         'invoice_number': 'Invoice Number',
@@ -86,7 +86,7 @@ translations = {
         'language': 'Language',
         'company_name': 'Company Name',
     }
-    # Andere talen kun je zo toevoegen...
+    # Voeg hier indien gewenst andere talen toe
 }
 
 def get_translation():
@@ -189,190 +189,132 @@ INDEX_HTML = '''
 <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap&subset=arabic" rel="stylesheet" />
 <style>
   body {
-    margin: 0;
+    background: linear-gradient(135deg, #e0f7fa 0%, #ffffff 100%);
     font-family: 'Poppins', sans-serif;
-    background: #f0f5f9;
+    margin: 0; padding: 20px;
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
+    display: flex; align-items: center; justify-content: center;
     direction: {{ 'rtl' if lang == 'ar' else 'ltr' }};
     text-align: {{ 'right' if lang == 'ar' else 'left' }};
-    position: relative;
-    overflow-x: hidden;
   }
-
-  body::before,
-  body::after {
-    content: "";
-    position: fixed;
-    border-radius: 50%;
-    opacity: 0.15;
-    z-index: 0;
-  }
-  body::before {
-    width: 300px;
-    height: 300px;
-    background: #007bff;
-    top: -50px;
-    left: -100px;
-  }
-  body::after {
-    width: 500px;
-    height: 500px;
-    background: #00c6ff;
-    bottom: -150px;
-    right: -150px;
-  }
-
   .container {
+    width: 100%; max-width: 900px;
     background: white;
-    padding: 40px 50px;
-    border-radius: 16px;
-    box-shadow: 0 10px 40px rgba(0, 123, 255, 0.15);
-    width: 100%;
-    max-width: 920px;
-    z-index: 1;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
   }
-
-  h1 {
-    text-align: center;
-    color: #007bff;
-    margin-bottom: 40px;
-    font-weight: 700;
-    font-size: 2.8rem;
-  }
-
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-  }
-
+  h1 {text-align: center; color: #007bff; margin-bottom: 30px;}
+  form {display: flex; flex-direction: column; gap: 20px;}
+  .block {padding: 20px; border-radius: 12px; margin-bottom: 20px; background-color: #f9f9f9;}
+  .bedrijf {background-color: #e6f2ff;}
+  .klant {background-color: #fff3e6;}
   label {
-    font-weight: 600;
-    color: #444;
-    margin-bottom: 8px;
     display: block;
-    font-size: 1rem;
+    margin-top: 10px;
+    font-weight: 500;
+    font-size: 14px;
+    color: #555;
   }
-
-  input[type="text"],
-  input[type="number"],
-  select,
-  input[type="file"] {
+  input, select {
     width: 100%;
-    padding: 14px 18px;
-    font-size: 1rem;
-    border-radius: 10px;
-    border: 1.8px solid #ddd;
+    max-width: 100%;
+    padding: 12px 15px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
     box-sizing: border-box;
-    transition: border-color 0.3s ease;
+    transition: filter 0.5s ease;
+    position: relative;
   }
-  input[type="text"]:focus,
-  input[type="number"]:focus,
-  select:focus,
-  input[type="file"]:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 10px rgba(0, 123, 255, 0.25);
+  .blur-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255,255,255,0.8);
+    color: #333;
+    font-weight: bold;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    border-radius: 8px;
+    user-select: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
   }
-
-  .form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
+  .blurred {
+    filter: blur(5px);
+    pointer-events: none;
+    user-select: none;
+    position: relative;
   }
-
-  .block {
-    background: #f9f9f9;
-    padding: 25px 30px;
-    border-radius: 14px;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.03);
+  .dienst-block {
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 12px;
+    margin-top: 15px;
+    background-color: #f9f9f9;
+    position: relative;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
   }
-
-  .bedrijf {
-    background: #e6f2ff;
+  .remove-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
   }
-  .klant {
-    background: #fff3e6;
+  button {
+    padding: 15px;
+    border: none;
+    border-radius: 30px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
   }
-
+  button:hover {
+    background-color: #0056b3;
+  }
   .button-group {
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    margin-top: 25px;
+    gap: 10px;
+    margin-top: 15px;
   }
-
-  button, .add-service-btn {
-    background-color: #007bff;
-    color: white;
-    padding: 15px 0;
-    font-size: 1.1rem;
-    font-weight: 600;
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    box-shadow: 0 6px 18px rgba(0, 123, 255, 0.25);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  canvas {
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    margin-top: 10px;
     width: 100%;
+    height: 200px;
   }
-
-  button:hover, .add-service-btn:hover {
-    background-color: #0056b3;
-    box-shadow: 0 8px 20px rgba(0, 86, 179, 0.35);
+  .form-grid {
+    display: block;
   }
-
-  .add-service-btn {
-    max-width: 220px;
-    margin-top: 20px;
-    align-self: center;
+  @media (min-width: 768px) {
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
   }
-
-  .dienst-block {
-    background: white;
-    border: 1.5px solid #ccc;
-    border-radius: 12px;
-    padding: 20px 25px;
-    margin-top: 20px;
-    position: relative;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.05);
-  }
-
-  .remove-btn {
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    font-size: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    line-height: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  canvas#signature-pad {
-    width: 100% !important;
-    height: 210px !important;
-    border: 2.5px solid #ddd;
-    border-radius: 12px;
-    margin-top: 14px;
-  }
-
   .language-select {
-    margin-bottom: 30px;
-    font-size: 1rem;
+    margin-bottom: 20px;
+    font-size: 14px;
     text-align: left;
-    max-width: 200px;
   }
 </style>
 </head>
@@ -443,7 +385,7 @@ INDEX_HTML = '''
       </div>
 
       <div id="diensten"></div>
-      <button type="button" class="add-service-btn" onclick="voegDienstToe()">{{ t.add_service }}</button>
+      <button type="button" onclick="voegDienstToe()">{{ t.add_service }}</button>
 
       <h2>{{ t.signature_label }}</h2>
       <canvas id="signature-pad"></canvas>
@@ -500,6 +442,7 @@ INDEX_HTML = '''
       signaturePad = new SignaturePad(canvas);
       resizeCanvas();
       loadCompanyInfo();
+      applyBlurProtectionToInputs();
     };
 
     function saveSignature() {
@@ -539,6 +482,53 @@ INDEX_HTML = '''
         document.querySelector(`[name="${field}"]`).value = '';
       });
       alert('{{ t.clear_company }}!');
+    }
+
+    // Blur security feature implementation
+    function applyBlurProtection(input) {
+      let timeoutId;
+
+      function addBlur() {
+        if (!input.classList.contains('blurred')) {
+          input.classList.add('blurred');
+
+          let overlay = document.createElement('div');
+          overlay.className = 'blur-overlay';
+          overlay.innerText = 'Security Protection';
+
+          input.parentNode.style.position = 'relative';
+          input.parentNode.appendChild(overlay);
+
+          setTimeout(() => {
+            overlay.style.opacity = '1';
+          }, 10);
+        }
+      }
+
+      function removeBlur() {
+        input.classList.remove('blurred');
+        const overlay = input.parentNode.querySelector('.blur-overlay');
+        if (overlay) {
+          overlay.style.opacity = '0';
+          setTimeout(() => overlay.remove(), 500);
+        }
+        clearTimeout(timeoutId);
+        timeoutId = null;
+      }
+
+      input.addEventListener('input', () => {
+        if (timeoutId) clearTimeout(timeoutId);
+        removeBlur();
+        timeoutId = setTimeout(addBlur, 5000);
+      });
+
+      input.addEventListener('focus', removeBlur);
+    }
+
+    function applyBlurProtectionToInputs() {
+      document.querySelectorAll('input[type="text"], input[type="number"]').forEach(input => {
+        applyBlurProtection(input);
+      });
     }
 
     document.getElementById('invoiceForm').addEventListener('submit', function (e) {
