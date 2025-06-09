@@ -496,7 +496,6 @@ INDEX_HTML = '''
 <style>
   body {
     background: 
-      radial-gradient(circle at 20% 20%, rgba(255, 179, 128, 0.6), transparent 50%),
       radial-gradient(circle at 80% 30%, rgba(129, 196, 242, 0.5), transparent 50%),
       radial-gradient(circle at 60% 80%, rgba(255, 204, 153, 0.4), transparent 60%),
       radial-gradient(circle at 30% 70%, rgba(162, 210, 255, 0.45), transparent 55%);
