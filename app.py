@@ -8,10 +8,85 @@ from flask import Flask, request, render_template_string, send_file, redirect, u
 from weasyprint import HTML, CSS
 
 app = Flask(__name__)
+app.debug = True  # Debug aan voor foutmeldingen tijdens development
 pdf_storage = {}
 
 translations = {
-    # ... zoals eerder, Nederlands en Engels blijven gelijk ...
+    'nl': {
+        'title': 'Snelfactuurtje',
+        'invoice_number': 'Factuurnummer',
+        'date': 'Datum',
+        'invoice_to': 'Factuur aan:',
+        'description': 'Omschrijving',
+        'quantity': 'Aantal',
+        'price': 'Prijs',
+        'vat_percent': 'BTW%',
+        'amount': 'Bedrag',
+        'subtotal': 'Subtotaal (excl. BTW):',
+        'total_vat': 'Totaal BTW:',
+        'total': 'Totaal (incl. BTW):',
+        'greeting': 'Met vriendelijke groet,',
+        'signature': 'Handtekening:',
+        'company_info': 'Bedrijfsgegevens',
+        'client_info': 'Klantgegevens',
+        'service': 'Dienst',
+        'price_per_unit': 'Prijs per stuk',
+        'add_service': 'Dienst toevoegen',
+        'signature_label': 'Handtekening',
+        'clear_signature': 'Handtekening wissen',
+        'download_invoice': 'Factuur Openen',
+        'save_company': 'Bedrijfsgegevens opslaan',
+        'clear_company': 'Bedrijfsgegevens wissen',
+        'upload_logo': 'Upload jouw logo (optioneel)',
+        'street': 'Straat en huisnummer',
+        'postcode': 'Postcode',
+        'city': 'Plaats',
+        'country': 'Land',
+        'kvk': 'KvK-nummer',
+        'vat': 'BTW-nummer',
+        'iban': 'IBAN-nummer',
+        'client_name': 'Klantnaam',
+        'language': 'Taal',
+        'company_name': 'Bedrijfsnaam',
+    },
+    'en': {
+        'title': 'Quick Invoice',
+        'invoice_number': 'Invoice Number',
+        'date': 'Date',
+        'invoice_to': 'Invoice To:',
+        'description': 'Description',
+        'quantity': 'Quantity',
+        'price': 'Price',
+        'vat_percent': 'VAT%',
+        'amount': 'Amount',
+        'subtotal': 'Subtotal (excl. VAT):',
+        'total_vat': 'Total VAT:',
+        'total': 'Total (incl. VAT):',
+        'greeting': 'Kind regards,',
+        'signature': 'Signature:',
+        'company_info': 'Company Information',
+        'client_info': 'Client Information',
+        'service': 'Service',
+        'price_per_unit': 'Price per Unit',
+        'add_service': 'Add Service',
+        'signature_label': 'Signature',
+        'clear_signature': 'Clear Signature',
+        'download_invoice': 'Open Invoice',
+        'save_company': 'Save Company Info',
+        'clear_company': 'Clear Company Info',
+        'upload_logo': 'Upload your logo (optional)',
+        'street': 'Street and Number',
+        'postcode': 'Postal Code',
+        'city': 'City',
+        'country': 'Country',
+        'kvk': 'Chamber of Commerce Number',
+        'vat': 'VAT Number',
+        'iban': 'IBAN Number',
+        'client_name': 'Client Name',
+        'language': 'Language',
+        'company_name': 'Company Name',
+    },
+    # Voeg hier je andere talen toe zoals je al had...
 }
 
 def get_translation():
@@ -30,29 +105,38 @@ def generate_pdf():
     try:
         t, lang = get_translation()
 
-        factuurnummer = request.form['factuurnummer']
-        bedrijfsnaam = request.form['bedrijfsnaam']
-        straat = request.form['straat']
-        postcode = request.form['postcode']
-        plaats = request.form['plaats']
-        land = request.form['land']
-        kvk = request.form['kvk']
-        btw = request.form['btw']
-        iban = request.form['iban']
+        factuurnummer = request.form.get('factuurnummer')
+        bedrijfsnaam = request.form.get('bedrijfsnaam')
+        straat = request.form.get('straat')
+        postcode = request.form.get('postcode')
+        plaats = request.form.get('plaats')
+        land = request.form.get('land')
+        kvk = request.form.get('kvk')
+        btw = request.form.get('btw')
+        iban = request.form.get('iban')
 
-        klantnaam = request.form['klantnaam']
-        klant_straat = request.form['klant_straat']
-        klant_postcode = request.form['klant_postcode']
-        klant_plaats = request.form['klant_plaats']
-        klant_land = request.form['klant_land']
+        klantnaam = request.form.get('klantnaam')
+        klant_straat = request.form.get('klant_straat')
+        klant_postcode = request.form.get('klant_postcode')
+        klant_plaats = request.form.get('klant_plaats')
+        klant_land = request.form.get('klant_land')
 
         diensten = []
         index = 0
         while f'dienst_{index}' in request.form:
             dienst = request.form.get(f'dienst_{index}')
-            aantal = int(request.form.get(f'aantal_{index}', 1))
-            prijs = float(request.form.get(f'prijs_{index}', 0))
-            btw_percentage = float(request.form.get(f'btw_{index}', 21))
+            try:
+                aantal = int(request.form.get(f'aantal_{index}', 1))
+            except:
+                aantal = 1
+            try:
+                prijs = float(request.form.get(f'prijs_{index}', 0))
+            except:
+                prijs = 0.0
+            try:
+                btw_percentage = float(request.form.get(f'btw_{index}', 21))
+            except:
+                btw_percentage = 21
             diensten.append((dienst, aantal, prijs, btw_percentage))
             index += 1
 
@@ -91,7 +175,9 @@ def generate_pdf():
 
         return redirect(url_for('serve_pdf', pdf_id=pdf_id, lang=lang))
     except Exception as e:
-        abort(400, description=f"Fout bij verwerken van factuur: {e}")
+        import traceback
+        traceback.print_exc()
+        abort(500, description=f"Fout bij verwerken van factuur: {e}")
 
 @app.route('/pdf/<pdf_id>', methods=['GET'])
 def serve_pdf(pdf_id):
@@ -104,7 +190,13 @@ def serve_pdf(pdf_id):
                      as_attachment=False,
                      download_name='factuur.pdf')
 
-INDEX_HTML = '''
+@app.context_processor
+def inject_now():
+    return {'now': datetime.today().strftime('%d-%m-%Y')}
+
+# Vervang hieronder door jouw originele INDEX_HTML, PDF_HTML en PDF_CSS strings
+
+INDEX_HTML = ''' 
 <!doctype html>
 <html lang="{{ lang }}" dir="{{ 'rtl' if lang == 'ar' else 'ltr' }}">
 <head>
@@ -143,36 +235,13 @@ INDEX_HTML = '''
   }
   input, select {
     width: 100%;
-    max-width: 100%;
-    padding: 12px 15px;
-    font-size: 16px;
+    padding: 12px;
+    margin-top: 5px;
+    border-radius: 8px;
     border: 1px solid #ccc;
-    border-radius: 8px;
-    box-sizing: border-box;
-    transition: filter 0.5s ease;
-    position: relative;
-  }
-  .blur-overlay {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(255,255,255,0.8);
-    color: #333;
-    font-weight: bold;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
     font-size: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-    border-radius: 8px;
-    user-select: none;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-  }
-  .blurred {
-    filter: blur(5px);
-    pointer-events: none;
-    user-select: none;
-    position: relative;
+    box-sizing: border-box;
   }
   .dienst-block {
     border: 1px solid #ccc;
@@ -248,6 +317,9 @@ INDEX_HTML = '''
     <form id="languageForm" class="language-select" method="GET" action="/">
       <label for="langSelect">{{ t.language }}:</label>
       <select id="langSelect" name="lang" onchange="document.getElementById('languageForm').submit()">
+        {% for code, _ in translations.items() %}
+        <option value="{{ code }}" {% if lang == code %}selected{% endif %}>{{ code.upper() }}</option>
+        {% endfor %}
         <option value="nl" {% if lang == 'nl' %}selected{% endif %}>Nederlands</option>
         <option value="de" {% if lang == 'de' %}selected{% endif %}>Deutsch</option>
         <option value="fr" {% if lang == 'fr' %}selected{% endif %}>Français</option>
@@ -367,7 +439,6 @@ INDEX_HTML = '''
       signaturePad = new SignaturePad(canvas);
       resizeCanvas();
       loadCompanyInfo();
-      applyBlurProtectionToInputs();
     };
 
     function saveSignature() {
@@ -407,52 +478,6 @@ INDEX_HTML = '''
         document.querySelector(`[name="${field}"]`).value = '';
       });
       alert('{{ t.clear_company }}!');
-    }
-
-    function applyBlurProtection(input) {
-      let timeoutId;
-
-      function addBlur() {
-        if (!input.classList.contains('blurred')) {
-          input.classList.add('blurred');
-
-          let overlay = document.createElement('div');
-          overlay.className = 'blur-overlay';
-          overlay.innerText = 'Security Protection';
-
-          input.parentNode.style.position = 'relative';
-          input.parentNode.appendChild(overlay);
-
-          setTimeout(() => {
-            overlay.style.opacity = '1';
-          }, 10);
-        }
-      }
-
-      function removeBlur() {
-        input.classList.remove('blurred');
-        const overlay = input.parentNode.querySelector('.blur-overlay');
-        if (overlay) {
-          overlay.style.opacity = '0';
-          setTimeout(() => overlay.remove(), 500);
-        }
-        clearTimeout(timeoutId);
-        timeoutId = null;
-      }
-
-      input.addEventListener('input', () => {
-        if (timeoutId) clearTimeout(timeoutId);
-        removeBlur();
-        timeoutId = setTimeout(addBlur, 5000);
-      });
-
-      input.addEventListener('focus', removeBlur);
-    }
-
-    function applyBlurProtectionToInputs() {
-      document.querySelectorAll('input[type="text"], input[type="number"]').forEach(input => {
-        applyBlurProtection(input);
-      });
     }
 
     document.getElementById('invoiceForm').addEventListener('submit', function (e) {
@@ -605,10 +630,6 @@ body {
   font-size: 12pt;
 }
 '''
-
-@app.context_processor
-def inject_now():
-    return {'now': datetime.today().strftime('%d-%m-%Y')}
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
