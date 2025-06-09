@@ -49,7 +49,6 @@ translations = {
         'language': 'Taal',
         'company_name': 'Bedrijfsnaam',
     },
-    # Voeg hier andere talen toe, minimaal Engels:
     'en': {
         'title': 'Quick Invoice',
         'invoice_number': 'Invoice Number',
@@ -87,6 +86,7 @@ translations = {
         'language': 'Language',
         'company_name': 'Company Name',
     }
+    # Voeg hier meer talen toe indien gewenst
 }
 
 class FactuurPDF(FPDF):
@@ -94,7 +94,7 @@ class FactuurPDF(FPDF):
         super().__init__()
         self.logo_stream = logo_stream
         self.t = t or translations['nl']
-        # Voeg fonts toe (zorg dat fonts map bestaat en bevat deze bestanden!)
+        # Fonts toevoegen
         self.add_font('DejaVu', '', 'fonts/DejaVuSans.ttf', uni=True)
         self.add_font('DejaVu', 'B', 'fonts/DejaVuSans-Bold.ttf', uni=True)
         self.set_font('DejaVu', '', 11)
@@ -198,7 +198,7 @@ def index():
     t, lang = get_translation()
     html_content = f'''
 <!doctype html>
-<html lang="{lang}" {'dir="rtl"' if lang == 'ar' else ''}>
+<html lang="{lang}">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -211,7 +211,6 @@ def index():
       margin: 0; padding: 20px;
       min-height: 100vh;
       display: flex; align-items: center; justify-content: center;
-      {'direction: rtl;' if lang == 'ar' else ''}
     }}
     .container {{
       width: 100%; max-width: 900px;
@@ -231,7 +230,6 @@ def index():
       font-weight: 500;
       font-size: 14px;
       color: #555;
-      {'text-align: right;' if lang == 'ar' else ''}
     }}
     input, select {{
       width: 100%;
@@ -242,7 +240,6 @@ def index():
       box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
       font-size: 14px;
       box-sizing: border-box;
-      {'direction: rtl; text-align: right;' if lang == 'ar' else ''}
     }}
     .dienst-block {{
       border: 1px solid #ccc;
@@ -252,7 +249,6 @@ def index():
       background-color: #f9f9f9;
       position: relative;
       box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-      {'direction: rtl;' if lang == 'ar' else ''}
     }}
     .remove-btn {{
       position: absolute;
@@ -269,7 +265,6 @@ def index():
       align-items: center;
       justify-content: center;
       font-size: 16px;
-      {'right: auto; left: 10px;' if lang == 'ar' else ''}
     }}
     button {{
       padding: 15px;
@@ -297,7 +292,6 @@ def index():
       margin-top: 10px;
       width: 100%;
       height: 200px;
-      {'direction: ltr;' if lang == 'ar' else ''}
     }}
     .form-grid {{
       display: block;
@@ -312,7 +306,7 @@ def index():
     .language-select {{
       margin-bottom: 20px;
       font-size: 14px;
-      text-align: {'right' if lang == 'ar' else 'left'};
+      text-align: left;
     }}
   </style>
 </head>
@@ -322,15 +316,8 @@ def index():
       <label for="langSelect">{t["language"]}:</label>
       <select id="langSelect" name="lang" onchange="document.getElementById('languageForm').submit()">
         <option value="nl" {'selected' if lang == 'nl' else ''}>Nederlands</option>
-        <option value="de" {'selected' if lang == 'de' else ''}>Deutsch</option>
-        <option value="fr" {'selected' if lang == 'fr' else ''}>Français</option>
-        <option value="it" {'selected' if lang == 'it' else ''}>Italiano</option>
-        <option value="es" {'selected' if lang == 'es' else ''}>Español</option>
-        <option value="pt" {'selected' if lang == 'pt' else ''}>Português</option>
-        <option value="ja" {'selected' if lang == 'ja' else ''}>日本語</option>
-        <option value="zh" {'selected' if lang == 'zh' else ''}>中文</option>
-        <option value="ar" {'selected' if lang == 'ar' else ''}>العربية</option>
         <option value="en" {'selected' if lang == 'en' else ''}>English</option>
+        <!-- Voeg hier meer talen toe -->
       </select>
     </form>
 
@@ -544,7 +531,8 @@ def generate_pdf():
         pdf_id = str(uuid.uuid4())
         pdf_storage[pdf_id] = pdf_data
 
-        return redirect(url_for('serve_pdf', pdf_id=pdf_id))
+        # Redirect naar pdf met taal mee in querystring zodat taal blijft behouden
+        return redirect(url_for('serve_pdf', pdf_id=pdf_id, lang=lang))
     except Exception as e:
         abort(400, description=f"Fout bij verwerken van factuur: {e}")
 
@@ -553,6 +541,8 @@ def serve_pdf(pdf_id):
     pdf_data = pdf_storage.get(pdf_id)
     if not pdf_data:
         abort(404)
+    # We kunnen taal lezen, maar hier gebruiken we hem niet voor iets (kan je uitbreiden)
+    lang = request.args.get('lang', 'nl')
     return send_file(
         io.BytesIO(pdf_data),
         mimetype='application/pdf',
