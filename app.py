@@ -495,15 +495,14 @@ INDEX_HTML = '''
 <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap&subset=arabic" rel="stylesheet" />
 <style>
   body {
-    background: 
-      radial-gradient(circle at 80% 30%, rgba(129, 196, 242, 0.5), transparent 50%),
-      radial-gradient(circle at 60% 80%, rgba(255, 204, 153, 0.4), transparent 60%),
-      radial-gradient(circle at 30% 70%, rgba(162, 210, 255, 0.45), transparent 55%);
+    background:
+      radial-gradient(circle at 25% 40%, rgba(255, 179, 71, 0.4), transparent 60%),
+      radial-gradient(circle at 70% 70%, rgba(100, 149, 237, 0.4), transparent 55%);
     background-repeat: no-repeat;
     background-size: cover;
     background-attachment: fixed;
     font-family: 'Poppins', sans-serif;
-    color: #2e4a45;
+    color: #264653;
     margin: 0; padding: 20px;
     min-height: 100vh;
     display: flex; align-items: center; justify-content: center;
@@ -513,18 +512,17 @@ INDEX_HTML = '''
 
   .container {
     width: 100%; max-width: 900px;
-    background: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.9);
     padding: 40px 50px;
     border-radius: 25px;
     box-shadow:
-      0 4px 30px rgba(0, 0, 0, 0.1),
-      inset 0 0 40px rgba(255, 255, 255, 0.6);
-    border: 1px solid rgba(46, 74, 69, 0.3);
+      0 10px 25px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(38, 70, 83, 0.2);
   }
 
   h1 {
     text-align: center;
-    color: #3a7d7d;
+    color: #264653;
     margin-bottom: 40px;
     font-weight: 700;
     letter-spacing: 2px;
@@ -541,15 +539,14 @@ INDEX_HTML = '''
     padding: 20px;
     border-radius: 12px;
     margin-bottom: 20px;
-    background-color: #dff4f2;
-    border: 1px solid #a9d5d1;
-    box-shadow: none;
+    background-color: #f4f9f9;
+    border: 1px solid #a2d2ff;
   }
   .bedrijf {
-    background-color: #dff4f2;
+    background-color: #f4f9f9;
   }
   .klant {
-    background-color: #dff4f2;
+    background-color: #f4f9f9;
   }
 
   label {
@@ -557,7 +554,7 @@ INDEX_HTML = '''
     margin-top: 10px;
     font-weight: 600;
     font-size: 14px;
-    color: #2e4a45;
+    color: #264653;
   }
 
   input, select {
@@ -565,45 +562,45 @@ INDEX_HTML = '''
     padding: 14px 18px;
     margin-top: 6px;
     border-radius: 10px;
-    border: 1.5px solid #a9d5d1;
-    background: #f0fbfa;
-    color: #2e4a45;
+    border: 1.5px solid #a2d2ff;
+    background: #e8f0f8;
+    color: #264653;
     font-size: 16px;
     box-sizing: border-box;
     transition: all 0.3s ease;
-    box-shadow: inset 0 0 8px rgba(169, 213, 209, 0.6);
+    box-shadow: inset 0 0 8px rgba(162, 210, 255, 0.5);
   }
 
   input::placeholder {
-    color: #a9d5d1;
+    color: #a2d2ff;
     opacity: 0.8;
   }
 
   input:focus, select:focus {
     outline: none;
-    border-color: #3a7d7d;
-    box-shadow: 0 0 8px #3a7d7d;
-    background: #e0f7f6;
-    color: #1e3d3c;
+    border-color: #ffb347;
+    box-shadow: 0 0 10px #ffb347;
+    background: #fff7e6;
+    color: #264653;
     filter: none !important;
     text-indent: 0 !important;
   }
 
   /* Blur alleen op klant inputs/selects */
   .klant input.blurred, .klant select.blurred {
-    filter: blur(3px);
-    opacity: 0.7;
-    color: #2e4a45;
-    text-indent: 0;
+    filter: blur(2px);
+    opacity: 0.75;
+    color: #264653;
     user-select: none;
+    cursor: default;
   }
 
   .dienst-block {
-    border: 1px solid #a9d5d1;
+    border: 1px solid #a2d2ff;
     padding: 15px;
     border-radius: 12px;
     margin-top: 15px;
-    background-color: #dff4f2;
+    background-color: #f4f9f9;
     position: relative;
     box-shadow: none;
   }
@@ -612,16 +609,13 @@ INDEX_HTML = '''
     position: absolute;
     top: 10px;
     right: 10px;
-    background-color: #3a7d7d;
+    background-color: #ffb347;
     color: white;
     border: none;
     border-radius: 50%;
     width: 30px;
     height: 30px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     font-size: 16px;
   }
 
@@ -629,7 +623,7 @@ INDEX_HTML = '''
     padding: 15px;
     border: none;
     border-radius: 25px;
-    background-color: #3a7d7d;
+    background-color: #264653;
     color: white;
     font-size: 16px;
     font-weight: 600;
@@ -638,7 +632,7 @@ INDEX_HTML = '''
   }
 
   button:hover {
-    background-color: #2a5e5e;
+    background-color: #1b2c32;
   }
 
   .button-group {
@@ -649,12 +643,12 @@ INDEX_HTML = '''
   }
 
   canvas {
-    border: 2px solid #3a7d7d;
+    border: 2px solid #264653;
     border-radius: 8px;
     margin-top: 10px;
     width: 100%;
     height: 200px;
-    background-color: #e0f7f6;
+    background-color: #e8f0f8;
   }
 
   .form-grid {
@@ -754,119 +748,119 @@ INDEX_HTML = '''
     </form>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
-  <script>
-    let dienstIndex = 0;
-    function voegDienstToe() {
-      const container = document.getElementById('diensten');
-      const div = document.createElement('div');
-      div.className = 'dienst-block';
-      div.innerHTML = `
-        <button type='button' class='remove-btn' onclick='this.parentNode.remove()'>×</button>
-        <label>{{ t.service }}:</label>
-        <input name='dienst_${dienstIndex}' required />
-        <label>{{ t.quantity }}:</label>
-        <input name='aantal_${dienstIndex}' type='number' required />
-        <label>{{ t.price_per_unit }}:</label>
-        <input name='prijs_${dienstIndex}' type='number' step='0.01' required />
-        <label>{{ t.vat_percent }}:</label>
-        <select name='btw_${dienstIndex}'>
-          <option value='0'>0%</option>
-          <option value='9'>9%</option>
-          <option value='21' selected>21%</option>
-        </select>
-      `;
-      container.appendChild(div);
-      dienstIndex++;
-      applyBlurEffectToInputs(div);
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+<script>
+  let dienstIndex = 0;
+  function voegDienstToe() {
+    const container = document.getElementById('diensten');
+    const div = document.createElement('div');
+    div.className = 'dienst-block';
+    div.innerHTML = `
+      <button type='button' class='remove-btn' onclick='this.parentNode.remove()'>×</button>
+      <label>{{ t.service }}:</label>
+      <input name='dienst_${dienstIndex}' required />
+      <label>{{ t.quantity }}:</label>
+      <input name='aantal_${dienstIndex}' type='number' required />
+      <label>{{ t.price_per_unit }}:</label>
+      <input name='prijs_${dienstIndex}' type='number' step='0.01' required />
+      <label>{{ t.vat_percent }}:</label>
+      <select name='btw_${dienstIndex}'>
+        <option value='0'>0%</option>
+        <option value='9'>9%</option>
+        <option value='21' selected>21%</option>
+      </select>
+    `;
+    container.appendChild(div);
+    dienstIndex++;
+    applyBlurEffectToInputs(div);
+  }
+
+  var canvas = document.getElementById('signature-pad');
+  var signaturePad;
+
+  function resizeCanvas() {
+    if (!signaturePad) return;
+    const data = signaturePad.toData();
+    const ratio = Math.max(window.devicePixelRatio || 1, 1);
+    canvas.width = canvas.offsetWidth * ratio;
+    canvas.height = canvas.offsetHeight * ratio;
+    canvas.getContext('2d').scale(ratio, ratio);
+    signaturePad.clear();
+    signaturePad.fromData(data);
+  }
+
+  window.addEventListener('resize', resizeCanvas);
+
+  window.onload = function () {
+    signaturePad = new SignaturePad(canvas);
+    resizeCanvas();
+    loadCompanyInfo();
+    applyBlurEffectToInputs(document);
+  };
+
+  function saveSignature() {
+    if (!signaturePad.isEmpty()) {
+      var dataURL = signaturePad.toDataURL();
+      document.getElementById('handtekening').value = dataURL;
     }
+  }
 
-    var canvas = document.getElementById('signature-pad');
-    var signaturePad;
+  function clearSignature() {
+    signaturePad.clear();
+  }
 
-    function resizeCanvas() {
-      if (!signaturePad) return;
-      const data = signaturePad.toData();
-      const ratio = Math.max(window.devicePixelRatio || 1, 1);
-      canvas.width = canvas.offsetWidth * ratio;
-      canvas.height = canvas.offsetHeight * ratio;
-      canvas.getContext('2d').scale(ratio, ratio);
-      signaturePad.clear();
-      signaturePad.fromData(data);
-    }
-
-    window.addEventListener('resize', resizeCanvas);
-
-    window.onload = function () {
-      signaturePad = new SignaturePad(canvas);
-      resizeCanvas();
-      loadCompanyInfo();
-      applyBlurEffectToInputs(document);
-    };
-
-    function saveSignature() {
-      if (!signaturePad.isEmpty()) {
-        var dataURL = signaturePad.toDataURL();
-        document.getElementById('handtekening').value = dataURL;
-      }
-    }
-
-    function clearSignature() {
-      signaturePad.clear();
-    }
-
-    function saveCompanyInfo() {
-      const fields = ['bedrijfsnaam', 'straat', 'postcode', 'plaats', 'land', 'kvk', 'btw', 'iban'];
-      fields.forEach((field) => {
-        const value = document.querySelector(`[name="${field}"]`).value;
-        localStorage.setItem(field, value);
-      });
-      alert('{{ t.save_company }}!');
-    }
-
-    function loadCompanyInfo() {
-      const fields = ['bedrijfsnaam', 'straat', 'postcode', 'plaats', 'land', 'kvk', 'btw', 'iban'];
-      fields.forEach((field) => {
-        const saved = localStorage.getItem(field);
-        if (saved) {
-          document.querySelector(`[name="${field}"]`).value = saved;
-        }
-      });
-    }
-
-    function clearCompanyInfo() {
-      const fields = ['bedrijfsnaam', 'straat', 'postcode', 'plaats', 'land', 'kvk', 'btw', 'iban'];
-      fields.forEach((field) => {
-        localStorage.removeItem(field);
-        document.querySelector(`[name="${field}"]`).value = '';
-      });
-      alert('{{ t.clear_company }}!');
-    }
-
-    document.getElementById('invoiceForm').addEventListener('submit', function (e) {
-      saveSignature();
+  function saveCompanyInfo() {
+    const fields = ['bedrijfsnaam', 'straat', 'postcode', 'plaats', 'land', 'kvk', 'btw', 'iban'];
+    fields.forEach((field) => {
+      const value = document.querySelector(`[name="${field}"]`).value;
+      localStorage.setItem(field, value);
     });
+    alert('{{ t.save_company }}!');
+  }
 
-    function applyBlurEffectToInputs(root) {
-      const klantInputs = root.querySelectorAll('.klant input, .klant select');
-      klantInputs.forEach(input => {
-        if (!input._blurListenersAdded) {
-          input.addEventListener('blur', () => {
-            if(input.value.trim() !== '') {
-              input.classList.add('blurred');
-            }
-          });
-          input.addEventListener('focus', () => {
-            input.classList.remove('blurred');
-          });
+  function loadCompanyInfo() {
+    const fields = ['bedrijfsnaam', 'straat', 'postcode', 'plaats', 'land', 'kvk', 'btw', 'iban'];
+    fields.forEach((field) => {
+      const saved = localStorage.getItem(field);
+      if (saved) {
+        document.querySelector(`[name="${field}"]`).value = saved;
+      }
+    });
+  }
+
+  function clearCompanyInfo() {
+    const fields = ['bedrijfsnaam', 'straat', 'postcode', 'plaats', 'land', 'kvk', 'btw', 'iban'];
+    fields.forEach((field) => {
+      localStorage.removeItem(field);
+      document.querySelector(`[name="${field}"]`).value = '';
+    });
+    alert('{{ t.clear_company }}!');
+  }
+
+  document.getElementById('invoiceForm').addEventListener('submit', function (e) {
+    saveSignature();
+  });
+
+  function applyBlurEffectToInputs(root) {
+    const klantInputs = root.querySelectorAll('.klant input, .klant select');
+    klantInputs.forEach(input => {
+      if (!input._blurListenersAdded) {
+        input.addEventListener('blur', () => {
           if(input.value.trim() !== '') {
             input.classList.add('blurred');
           }
-          input._blurListenersAdded = true;
+        });
+        input.addEventListener('focus', () => {
+          input.classList.remove('blurred');
+        });
+        if(input.value.trim() !== '') {
+          input.classList.add('blurred');
         }
-      });
-    }
-  </script>
+        input._blurListenersAdded = true;
+      }
+    });
+  }
+</script>
 </body>
 </html>
 '''
