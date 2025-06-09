@@ -432,6 +432,16 @@ def generate_pdf():
 
         handtekening_data = request.form.get('handtekening')
 
+        # Berekeningen voor totaal
+        subtotal = 0.0
+        total_vat = 0.0
+        for dienst, aantal, prijs, btw_pct in diensten:
+            excl = aantal * prijs
+            vat_amount = excl * btw_pct / 100
+            subtotal += excl
+            total_vat += vat_amount
+        total = subtotal + total_vat
+
         html_invoice = render_template_string(PDF_HTML,
                                               t=t,
                                               factuurnummer=factuurnummer,
@@ -449,6 +459,9 @@ def generate_pdf():
                                               klant_plaats=klant_plaats,
                                               klant_land=klant_land,
                                               diensten=diensten,
+                                              subtotal=subtotal,
+                                              total_vat=total_vat,
+                                              total=total,
                                               logo_data=logo_data,
                                               handtekening_data=handtekening_data,
                                               lang=lang)
@@ -576,7 +589,8 @@ INDEX_HTML = '''
 
   /* Blur alleen op klant inputs/selects */
   .klant input.blurred, .klant select.blurred {
-    filter: blur(1.5px);
+    filter: blur(3px);
+    opacity: 0.7;
     color: #2e4a45;
     text-indent: 0;
     user-select: none;
@@ -948,8 +962,6 @@ PDF_HTML = '''
       </tr>
     </thead>
     <tbody>
-      {% set subtotal = 0 %}
-      {% set total_vat = 0 %}
       {% for dienst, aantal, prijs, btw_pct in diensten %}
         {% set excl = aantal * prijs %}
         {% set vat_amount = excl * btw_pct / 100 %}
@@ -961,8 +973,6 @@ PDF_HTML = '''
           <td style="text-align:center;">{{ btw_pct }}%</td>
           <td style="text-align:right;">{{ "%.2f"|format(incl) }}</td>
         </tr>
-        {% set subtotal = subtotal + excl %}
-        {% set total_vat = total_vat + vat_amount %}
       {% endfor %}
     </tbody>
   </table>
@@ -970,7 +980,7 @@ PDF_HTML = '''
   <table class="totals" style="width: 300px; float: right;">
     <tr><td><strong>{{ t.subtotal }}</strong></td><td style="text-align:right;">{{ "%.2f"|format(subtotal) }} EUR</td></tr>
     <tr><td><strong>{{ t.total_vat }}</strong></td><td style="text-align:right;">{{ "%.2f"|format(total_vat) }} EUR</td></tr>
-    <tr><td><strong>{{ t.total }}</strong></td><td style="text-align:right;">{{ "%.2f"|format(subtotal + total_vat) }} EUR</td></tr>
+    <tr><td><strong>{{ t.total }}</strong></td><td style="text-align:right;">{{ "%.2f"|format(total) }} EUR</td></tr>
   </table>
 
   <div style="clear: both;"></div>
