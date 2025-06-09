@@ -399,6 +399,10 @@ def get_translation():
         lang = 'nl'
     return translations[lang], lang
 
+def format_currency(value):
+    # Format number with 2 decimals and Dutch format (comma decimal)
+    return f"€ {value:,.2f}".replace(',', 'X').replace('.', ',').replace('X', '.')
+
 @app.route('/', methods=['GET'])
 def index():
     t, lang = get_translation()
@@ -477,7 +481,8 @@ def generate_pdf():
                                               enumerate=enumerate,
                                               datetime=datetime,
                                               timedelta=timedelta,
-                                              now=datetime.today().strftime('%d-%m-%Y'))
+                                              now=datetime.today().strftime('%d-%m-%Y'),
+                                              format_currency=format_currency)
 
         pdf_file = HTML(string=html_invoice).write_pdf(stylesheets=[CSS(string=PDF_CSS)])
 
@@ -766,19 +771,18 @@ INDEX_HTML = '''
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 <script>
   let dienstIndex = 0;
-
   function voegDienstToe() {
     const container = document.getElementById('diensten');
     const div = document.createElement('div');
     div.className = 'dienst-block';
     div.innerHTML = `
-      <button type='button' class='remove-btn' aria-label="Remove service" title="Verwijder dienst">×</button>
+      <button type='button' class='remove-btn' onclick='this.parentNode.remove()' aria-label="Remove service">×</button>
       <label>{{ t.service }}:</label>
       <input name='dienst_${dienstIndex}' required />
       <label>{{ t.quantity }}:</label>
-      <input name='aantal_${dienstIndex}' type='number' min='1' required />
+      <input name='aantal_${dienstIndex}' type='number' min="1" required />
       <label>{{ t.price_per_unit }}:</label>
-      <input name='prijs_${dienstIndex}' type='number' step='0.01' min='0' required />
+      <input name='prijs_${dienstIndex}' type='number' step='0.01' min="0" required />
       <label>{{ t.vat_percent }}:</label>
       <select name='btw_${dienstIndex}'>
         <option value='0'>0%</option>
@@ -788,17 +792,6 @@ INDEX_HTML = '''
     `;
     container.appendChild(div);
     dienstIndex++;
-    applyBlurEffectToInputs(div);
-
-    // Fix remove button position for RTL
-    if(document.documentElement.dir === "rtl") {
-      div.querySelector('.remove-btn').style.left = "10px";
-      div.querySelector('.remove-btn').style.right = "auto";
-    }
-
-    div.querySelector('.remove-btn').onclick = function() {
-      div.remove();
-    };
   }
 
   var canvas = document.getElementById('signature-pad');
@@ -1022,9 +1015,9 @@ PDF_HTML = '''
         <tr>
           <td>{{ i }}</td>
           <td>{{ dienst }}</td>
-          <td class="right">€ {{ '%.2f'|format(prijs).replace('.', ',') }}</td>
+          <td class="right">{{ format_currency(prijs) }}</td>
           <td class="right">{{ aantal }}</td>
-          <td class="right">€ {{ '%.2f'|format(incl).replace('.', ',') }}</td>
+          <td class="right">{{ format_currency(incl) }}</td>
           <td class="right">{{ btw_pct }}%</td>
         </tr>
       {% endfor %}
@@ -1034,15 +1027,15 @@ PDF_HTML = '''
   <table class="totals-table">
     <tr>
       <td>{{ t.subtotal }}</td>
-      <td class="right">€ {{ '%.2f'|format(subtotal).replace('.', ',') }}</td>
+      <td class="right">{{ format_currency(subtotal) }}</td>
     </tr>
     <tr>
       <td>BTW:</td>
-      <td class="right">€ {{ '%.2f'|format(total_vat).replace('.', ',') }}</td>
+      <td class="right">{{ format_currency(total_vat) }}</td>
     </tr>
     <tr class="total-row">
       <td>{{ t.total }}</td>
-      <td class="right">€ {{ '%.2f'|format(total).replace('.', ',') }}</td>
+      <td class="right">{{ format_currency(total) }}</td>
     </tr>
   </table>
 
@@ -1064,6 +1057,15 @@ body {
   font-size: 12pt;
 }
 '''
+
+@app.context_processor
+def inject_now():
+    return {
+        'now': datetime.today().strftime('%d-%m-%Y'),
+        'datetime': datetime,
+        'timedelta': timedelta,
+        'enumerate': enumerate,
+    }
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
