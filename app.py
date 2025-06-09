@@ -467,7 +467,8 @@ def generate_pdf():
                                               total=total,
                                               logo_data=logo_data,
                                               handtekening_data=handtekening_data,
-                                              lang=lang)
+                                              lang=lang,
+                                              enumerate=enumerate)
 
         pdf_file = HTML(string=html_invoice).write_pdf(stylesheets=[CSS(string=PDF_CSS)])
 
@@ -620,7 +621,11 @@ INDEX_HTML = '''
     width: 30px;
     height: 30px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 20px;
+    line-height: 30px;
+    text-align: center;
+    padding: 0;
+    user-select: none;
   }
 
   button {
@@ -679,16 +684,9 @@ INDEX_HTML = '''
     <form id="languageForm" class="language-select" method="GET" action="/">
       <label for="langSelect">{{ t.language }}:</label>
       <select id="langSelect" name="lang" onchange="document.getElementById('languageForm').submit()">
-        <option value="nl" {% if lang == 'nl' %}selected{% endif %}>Nederlands</option>
-        <option value="de" {% if lang == 'de' %}selected{% endif %}>Deutsch</option>
-        <option value="fr" {% if lang == 'fr' %}selected{% endif %}>Français</option>
-        <option value="es" {% if lang == 'es' %}selected{% endif %}>Español</option>
-        <option value="pt" {% if lang == 'pt' %}selected{% endif %}>Português</option>
-        <option value="sv" {% if lang == 'sv' %}selected{% endif %}>Svenska</option>
-        <option value="tr" {% if lang == 'tr' %}selected{% endif %}>Türkçe</option>
-        <option value="it" {% if lang == 'it' %}selected{% endif %}>Italiano</option>
-        <option value="ar" {% if lang == 'ar' %}selected{% endif %}>العربية</option>
-        <option value="en" {% if lang == 'en' %}selected{% endif %}>English</option>
+        {% for key in translations.keys() %}
+          <option value="{{key}}" {% if lang == key %}selected{% endif %}>{{ translations[key]['language'] if 'language' in translations[key] else key }}</option>
+        {% endfor %}
       </select>
     </form>
 
@@ -752,7 +750,6 @@ INDEX_HTML = '''
     </form>
   </div>
 
-<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 <script>
   let dienstIndex = 0;
   function voegDienstToe() {
@@ -865,6 +862,7 @@ INDEX_HTML = '''
     });
   }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 </body>
 </html>
 '''
@@ -1049,6 +1047,7 @@ def inject_now():
         'now': datetime.today().strftime('%d-%m-%Y'),
         'datetime': datetime,
         'timedelta': timedelta,
+        'translations': translations,
     }
 
 if __name__ == '__main__':
