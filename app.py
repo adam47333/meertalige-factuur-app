@@ -122,7 +122,6 @@ translations = {
         'language': 'Language',
         'company_name': 'Company Name',
     }
-    # Voeg hier eventueel meer talen toe...
 }
 
 def get_translation():
@@ -134,293 +133,13 @@ def get_translation():
 @app.route('/', methods=['GET'])
 def index():
     t, lang = get_translation()
-    # HTML met embedded CSS en JS (layout blijft behouden)
-    html_content = f'''
-<!doctype html>
-<html lang="{lang}" dir="{'rtl' if lang=='ar' else 'ltr'}">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>{t["title"]}</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
-<style>
-  body {{
-    background: linear-gradient(135deg, #e0f7fa 0%, #ffffff 100%);
-    font-family: 'Poppins', sans-serif;
-    margin: 0; padding: 20px;
-    min-height: 100vh;
-    display: flex; align-items: center; justify-content: center;
-    direction: {'rtl' if lang=='ar' else 'ltr'};
-    text-align: {'right' if lang=='ar' else 'left'};
-  }}
-  .container {{
-    width: 100%; max-width: 900px;
-    background: white;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-  }}
-  h1 {{text-align: center; color: #007bff; margin-bottom: 30px;}}
-  form {{display: flex; flex-direction: column; gap: 20px;}}
-  .block {{padding: 20px; border-radius: 12px; margin-bottom: 20px; background-color: #f9f9f9;}}
-  .bedrijf {{background-color: #e6f2ff;}}
-  .klant {{background-color: #fff3e6;}}
-  label {{
-    display: block;
-    margin-top: 10px;
-    font-weight: 500;
-    font-size: 14px;
-    color: #555;
-  }}
-  input, select {{
-    width: 100%;
-    padding: 12px;
-    margin-top: 5px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-    font-size: 14px;
-    box-sizing: border-box;
-  }}
-  .dienst-block {{
-    border: 1px solid #ccc;
-    padding: 15px;
-    border-radius: 12px;
-    margin-top: 15px;
-    background-color: #f9f9f9;
-    position: relative;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  }}
-  .remove-btn {{
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: red;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-  }}
-  button {{
-    padding: 15px;
-    border: none;
-    border-radius: 30px;
-    background-color: #007bff;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s;
-  }}
-  button:hover {{
-    background-color: #0056b3;
-  }}
-  .button-group {{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 15px;
-  }}
-  canvas {{
-    border: 2px solid #ccc;
-    border-radius: 8px;
-    margin-top: 10px;
-    width: 100%;
-    height: 200px;
-  }}
-  .form-grid {{
-    display: block;
-  }}
-  @media (min-width: 768px) {{
-    .form-grid {{
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }}
-  }}
-  .language-select {{
-    margin-bottom: 20px;
-    font-size: 14px;
-    text-align: left;
-  }}
-</style>
-</head>
-<body>
-  <div class="container">
-    <form id="languageForm" class="language-select" method="GET" action="/">
-      <label for="langSelect">{t["language"]}:</label>
-      <select id="langSelect" name="lang" onchange="document.getElementById('languageForm').submit()">
-        <option value="nl" {'selected' if lang == 'nl' else ''}>Nederlands</option>
-        <option value="ar" {'selected' if lang == 'ar' else ''}>العربية</option>
-        <option value="en" {'selected' if lang == 'en' else ''}>English</option>
-      </select>
-    </form>
-
-    <h1>{t["title"]}</h1>
-    <form method="POST" action="/generate?lang={lang}" enctype="multipart/form-data" id="invoiceForm">
-      <label>{t["invoice_number"]}:</label>
-      <input name="factuurnummer" placeholder="Bijv. FACT-2025-001" required />
-
-      <div class="form-grid">
-        <div class="block bedrijf">
-          <h2>{t["company_info"]}</h2>
-          <label>{t["company_name"]}:</label>
-          <input name="bedrijfsnaam" required />
-          <label>{t["street"]}:</label>
-          <input name="straat" required />
-          <label>{t["postcode"]}:</label>
-          <input name="postcode" required />
-          <label>{t["city"]}:</label>
-          <input name="plaats" required />
-          <label>{t["country"]}:</label>
-          <input name="land" required />
-          <label>{t["kvk"]}:</label>
-          <input name="kvk" required />
-          <label>{t["vat"]}:</label>
-          <input name="btw" required />
-          <label>{t["iban"]}:</label>
-          <input name="iban" required />
-          <label>{t["upload_logo"]}:</label>
-          <input type="file" name="logo" />
-
-          <div class="button-group">
-            <button type="button" onclick="saveCompanyInfo()">{t["save_company"]}</button>
-            <button type="button" onclick="clearCompanyInfo()">{t["clear_company"]}</button>
-          </div>
-        </div>
-
-        <div class="block klant">
-          <h2>{t["client_info"]}</h2>
-          <label>{t["client_name"]}:</label>
-          <input name="klantnaam" required />
-          <label>{t["street"]}:</label>
-          <input name="klant_straat" required />
-          <label>{t["postcode"]}:</label>
-          <input name="klant_postcode" required />
-          <label>{t["city"]}:</label>
-          <input name="klant_plaats" required />
-          <label>{t["country"]}:</label>
-          <input name="klant_land" required />
-        </div>
-      </div>
-
-      <div id="diensten"></div>
-      <button type="button" onclick="voegDienstToe()">{t["add_service"]}</button>
-
-      <h2>{t["signature_label"]}</h2>
-      <canvas id="signature-pad"></canvas>
-      <button type="button" onclick="clearSignature()">{t["clear_signature"]}</button>
-      <input type="hidden" id="handtekening" name="handtekening" />
-
-      <button type="submit">{t["download_invoice"]}</button>
-    </form>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
-  <script>
-    let dienstIndex = 0;
-    function voegDienstToe() {{
-      const container = document.getElementById('diensten');
-      const div = document.createElement('div');
-      div.className = 'dienst-block';
-      div.innerHTML = `
-        <button type='button' class='remove-btn' onclick='this.parentNode.remove()'>×</button>
-        <label>{t["service"]}:</label>
-        <input name='dienst_${{dienstIndex}}' required />
-        <label>{t["quantity"]}:</label>
-        <input name='aantal_${{dienstIndex}}' type='number' required />
-        <label>{t["price_per_unit"]}:</label>
-        <input name='prijs_${{dienstIndex}}' type='number' step='0.01' required />
-        <label>{t["vat_percent"]}:</label>
-        <select name='btw_${{dienstIndex}}'>
-          <option value='0'>0%</option>
-          <option value='9'>9%</option>
-          <option value='21' selected>21%</option>
-        </select>
-      `;
-      container.appendChild(div);
-      dienstIndex++;
-    }}
-
-    var canvas = document.getElementById('signature-pad');
-    var signaturePad;
-
-    function resizeCanvas() {{
-      if (!signaturePad) return;
-      const data = signaturePad.toData();
-      const ratio = Math.max(window.devicePixelRatio || 1, 1);
-      canvas.width = canvas.offsetWidth * ratio;
-      canvas.height = canvas.offsetHeight * ratio;
-      canvas.getContext('2d').scale(ratio, ratio);
-      signaturePad.clear();
-      signaturePad.fromData(data);
-    }}
-
-    window.addEventListener('resize', resizeCanvas);
-
-    window.onload = function () {{
-      signaturePad = new SignaturePad(canvas);
-      resizeCanvas();
-      loadCompanyInfo();
-    }};
-
-    function saveSignature() {{
-      if (!signaturePad.isEmpty()) {{
-        var dataURL = signaturePad.toDataURL();
-        document.getElementById('handtekening').value = dataURL;
-      }}
-    }}
-
-    function clearSignature() {{
-      signaturePad.clear();
-    }}
-
-    function saveCompanyInfo() {{
-      const fields = ['bedrijfsnaam', 'straat', 'postcode', 'plaats', 'land', 'kvk', 'btw', 'iban'];
-      fields.forEach((field) => {{
-        const value = document.querySelector(`[name="${{field}}"]`).value;
-        localStorage.setItem(field, value);
-      }});
-      alert('{t["save_company"]}!');
-    }}
-
-    function loadCompanyInfo() {{
-      const fields = ['bedrijfsnaam', 'straat', 'postcode', 'plaats', 'land', 'kvk', 'btw', 'iban'];
-      fields.forEach((field) => {{
-        const saved = localStorage.getItem(field);
-        if (saved) {{
-          document.querySelector(`[name="${{field}}"]`).value = saved;
-        }}
-      }});
-    }}
-
-    function clearCompanyInfo() {{
-      const fields = ['bedrijfsnaam', 'straat', 'postcode', 'plaats', 'land', 'kvk', 'btw', 'iban'];
-      fields.forEach((field) => {{
-        localStorage.removeItem(field);
-        document.querySelector(`[name="${{field}}"]`).value = '';
-      }});
-      alert('{t["clear_company"]}!');
-    }}
-
-    document.getElementById('invoiceForm').addEventListener('submit', function (e) {{
-      saveSignature();
-    }});
-  </script>
-</body>
-</html>
-'''
-    return render_template_string(html_content)
+    return render_template_string(INDEX_HTML, t=t, lang=lang)
 
 @app.route('/generate', methods=['POST'])
 def generate_pdf():
     try:
+        t, lang = get_translation()
+
         factuurnummer = request.form['factuurnummer']
         bedrijfsnaam = request.form['bedrijfsnaam']
         straat = request.form['straat']
@@ -454,10 +173,8 @@ def generate_pdf():
 
         handtekening_data = request.form.get('handtekening')
 
-        t, lang = get_translation()
-
-        # Render HTML voor PDF
-        html_invoice = render_template_string(PDF_TEMPLATE, t=t,
+        html_invoice = render_template_string(PDF_HTML,
+                                              t=t,
                                               factuurnummer=factuurnummer,
                                               bedrijfsnaam=bedrijfsnaam,
                                               straat=straat,
@@ -497,63 +214,344 @@ def serve_pdf(pdf_id):
                      as_attachment=False,
                      download_name='factuur.pdf')
 
-# HTML template voor PDF
-PDF_TEMPLATE = '''
+INDEX_HTML = '''
+<!doctype html>
+<html lang="{{ lang }}" dir="{{ 'rtl' if lang == 'ar' else 'ltr' }}">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{{ t.title }}</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap&subset=arabic" rel="stylesheet" />
+<style>
+  body {
+    background: linear-gradient(135deg, #e0f7fa 0%, #ffffff 100%);
+    font-family: 'Poppins', sans-serif;
+    margin: 0; padding: 20px;
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    direction: {{ 'rtl' if lang == 'ar' else 'ltr' }};
+    text-align: {{ 'right' if lang == 'ar' else 'left' }};
+  }
+  .container {
+    width: 100%; max-width: 900px;
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  }
+  h1 {text-align: center; color: #007bff; margin-bottom: 30px;}
+  form {display: flex; flex-direction: column; gap: 20px;}
+  .block {padding: 20px; border-radius: 12px; margin-bottom: 20px; background-color: #f9f9f9;}
+  .bedrijf {background-color: #e6f2ff;}
+  .klant {background-color: #fff3e6;}
+  label {
+    display: block;
+    margin-top: 10px;
+    font-weight: 500;
+    font-size: 14px;
+    color: #555;
+  }
+  input, select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 5px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+  .dienst-block {
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 12px;
+    margin-top: 15px;
+    background-color: #f9f9f9;
+    position: relative;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  }
+  .remove-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+  button {
+    padding: 15px;
+    border: none;
+    border-radius: 30px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  button:hover {
+    background-color: #0056b3;
+  }
+  .button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+  }
+  canvas {
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    margin-top: 10px;
+    width: 100%;
+    height: 200px;
+  }
+  .form-grid {
+    display: block;
+  }
+  @media (min-width: 768px) {
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+  }
+  .language-select {
+    margin-bottom: 20px;
+    font-size: 14px;
+    text-align: left;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <form id="languageForm" class="language-select" method="GET" action="/">
+      <label for="langSelect">{{ t.language }}:</label>
+      <select id="langSelect" name="lang" onchange="document.getElementById('languageForm').submit()">
+        <option value="nl" {% if lang == 'nl' %}selected{% endif %}>Nederlands</option>
+        <option value="ar" {% if lang == 'ar' %}selected{% endif %}>العربية</option>
+        <option value="en" {% if lang == 'en' %}selected{% endif %}>English</option>
+      </select>
+    </form>
+
+    <h1>{{ t.title }}</h1>
+    <form method="POST" action="/generate?lang={{ lang }}" enctype="multipart/form-data" id="invoiceForm">
+      <label>{{ t.invoice_number }}:</label>
+      <input name="factuurnummer" placeholder="Bijv. FACT-2025-001" required />
+
+      <div class="form-grid">
+        <div class="block bedrijf">
+          <h2>{{ t.company_info }}</h2>
+          <label>{{ t.company_name }}:</label>
+          <input name="bedrijfsnaam" required />
+          <label>{{ t.street }}:</label>
+          <input name="straat" required />
+          <label>{{ t.postcode }}:</label>
+          <input name="postcode" required />
+          <label>{{ t.city }}:</label>
+          <input name="plaats" required />
+          <label>{{ t.country }}:</label>
+          <input name="land" required />
+          <label>{{ t.kvk }}:</label>
+          <input name="kvk" required />
+          <label>{{ t.vat }}:</label>
+          <input name="btw" required />
+          <label>{{ t.iban }}:</label>
+          <input name="iban" required />
+          <label>{{ t.upload_logo }}:</label>
+          <input type="file" name="logo" />
+
+          <div class="button-group">
+            <button type="button" onclick="saveCompanyInfo()">{{ t.save_company }}</button>
+            <button type="button" onclick="clearCompanyInfo()">{{ t.clear_company }}</button>
+          </div>
+        </div>
+
+        <div class="block klant">
+          <h2>{{ t.client_info }}</h2>
+          <label>{{ t.client_name }}:</label>
+          <input name="klantnaam" required />
+          <label>{{ t.street }}:</label>
+          <input name="klant_straat" required />
+          <label>{{ t.postcode }}:</label>
+          <input name="klant_postcode" required />
+          <label>{{ t.city }}:</label>
+          <input name="klant_plaats" required />
+          <label>{{ t.country }}:</label>
+          <input name="klant_land" required />
+        </div>
+      </div>
+
+      <div id="diensten"></div>
+      <button type="button" onclick="voegDienstToe()">{{ t.add_service }}</button>
+
+      <h2>{{ t.signature_label }}</h2>
+      <canvas id="signature-pad"></canvas>
+      <button type="button" onclick="clearSignature()">{{ t.clear_signature }}</button>
+      <input type="hidden" id="handtekening" name="handtekening" />
+
+      <button type="submit">{{ t.download_invoice }}</button>
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+  <script>
+    let dienstIndex = 0;
+    function voegDienstToe() {
+      const container = document.getElementById('diensten');
+      const div = document.createElement('div');
+      div.className = 'dienst-block';
+      div.innerHTML = `
+        <button type='button' class='remove-btn' onclick='this.parentNode.remove()'>×</button>
+        <label>{{ t.service }}:</label>
+        <input name='dienst_${dienstIndex}' required />
+        <label>{{ t.quantity }}:</label>
+        <input name='aantal_${dienstIndex}' type='number' required />
+        <label>{{ t.price_per_unit }}:</label>
+        <input name='prijs_${dienstIndex}' type='number' step='0.01' required />
+        <label>{{ t.vat_percent }}:</label>
+        <select name='btw_${dienstIndex}'>
+          <option value='0'>0%</option>
+          <option value='9'>9%</option>
+          <option value='21' selected>21%</option>
+        </select>
+      `;
+      container.appendChild(div);
+      dienstIndex++;
+    }
+
+    var canvas = document.getElementById('signature-pad');
+    var signaturePad;
+
+    function resizeCanvas() {
+      if (!signaturePad) return;
+      const data = signaturePad.toData();
+      const ratio = Math.max(window.devicePixelRatio || 1, 1);
+      canvas.width = canvas.offsetWidth * ratio;
+      canvas.height = canvas.offsetHeight * ratio;
+      canvas.getContext('2d').scale(ratio, ratio);
+      signaturePad.clear();
+      signaturePad.fromData(data);
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+
+    window.onload = function () {
+      signaturePad = new SignaturePad(canvas);
+      resizeCanvas();
+      loadCompanyInfo();
+    };
+
+    function saveSignature() {
+      if (!signaturePad.isEmpty()) {
+        var dataURL = signaturePad.toDataURL();
+        document.getElementById('handtekening').value = dataURL;
+      }
+    }
+
+    function clearSignature() {
+      signaturePad.clear();
+    }
+
+    function saveCompanyInfo() {
+      const fields = ['bedrijfsnaam', 'straat', 'postcode', 'plaats', 'land', 'kvk', 'btw', 'iban'];
+      fields.forEach((field) => {
+        const value = document.querySelector(`[name="${field}"]`).value;
+        localStorage.setItem(field, value);
+      });
+      alert('{{ t.save_company }}!');
+    }
+
+    function loadCompanyInfo() {
+      const fields = ['bedrijfsnaam', 'straat', 'postcode', 'plaats', 'land', 'kvk', 'btw', 'iban'];
+      fields.forEach((field) => {
+        const saved = localStorage.getItem(field);
+        if (saved) {
+          document.querySelector(`[name="${field}"]`).value = saved;
+        }
+      });
+    }
+
+    function clearCompanyInfo() {
+      const fields = ['bedrijfsnaam', 'straat', 'postcode', 'plaats', 'land', 'kvk', 'btw', 'iban'];
+      fields.forEach((field) => {
+        localStorage.removeItem(field);
+        document.querySelector(`[name="${field}"]`).value = '';
+      });
+      alert('{{ t.clear_company }}!');
+    }
+
+    document.getElementById('invoiceForm').addEventListener('submit', function (e) {
+      saveSignature();
+    });
+  </script>
+</body>
+</html>
+'''
+
+PDF_HTML = '''
 <!DOCTYPE html>
-<html lang="{{ lang }}" dir="{{ 'rtl' if lang=='ar' else 'ltr' }}">
+<html lang="{{ lang }}" dir="{{ 'rtl' if lang == 'ar' else 'ltr' }}">
 <head>
 <meta charset="UTF-8" />
 <style>
-  body {{
-    font-family: Arial, sans-serif;
+  @page { size: A4; margin: 30px; }
+  body {
+    font-family: 'Arial', sans-serif;
     font-size: 12pt;
-    margin: 30px;
-    direction: {{ 'rtl' if lang=='ar' else 'ltr' }};
-    text-align: {{ 'right' if lang=='ar' else 'left' }};
-  }}
-  .header {{
+    direction: {{ 'rtl' if lang == 'ar' else 'ltr' }};
+    text-align: {{ 'right' if lang == 'ar' else 'left' }};
+  }
+  .header {
     border-bottom: 2px solid #007bff;
     padding-bottom: 10px;
     margin-bottom: 20px;
-  }}
-  .logo {{
+    overflow: auto;
+  }
+  .logo {
     max-width: 150px;
-  }}
-  .company-details {{
+    float: left;
+  }
+  .company-details {
     float: right;
     text-align: right;
-  }}
-  .invoice-title {{
+  }
+  .invoice-title {
     font-size: 18pt;
     font-weight: bold;
     margin-bottom: 20px;
-  }}
-  table {{
+    clear: both;
+  }
+  table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
-  }}
-  th, td {{
+  }
+  th, td {
     border: 1px solid #ddd;
     padding: 8px;
-  }}
-  th {{
+  }
+  th {
     background-color: #e6f2ff;
     text-align: center;
-  }}
-  .totals td {{
+  }
+  .totals td {
     border: none;
-  }}
-  .signature {{
+  }
+  .signature {
     margin-top: 50px;
-  }}
-  .signature img {{
+  }
+  .signature img {
     max-width: 200px;
     height: auto;
-  }}
-  .clear {{
-    clear: both;
-  }}
+  }
 </style>
 </head>
 <body>
@@ -569,7 +567,6 @@ PDF_TEMPLATE = '''
       <div>KvK: {{ kvk }} | BTW: {{ btw }}</div>
       <div>IBAN: {{ iban }}</div>
     </div>
-    <div class="clear"></div>
   </div>
 
   <div class="invoice-title">{{ t.invoice_number }}: {{ factuurnummer }}</div>
@@ -616,6 +613,7 @@ PDF_TEMPLATE = '''
     <tr><td><strong>{{ t.total_vat }}</strong></td><td style="text-align:right;">{{ "%.2f"|format(total_vat) }} EUR</td></tr>
     <tr><td><strong>{{ t.total }}</strong></td><td style="text-align:right;">{{ "%.2f"|format(subtotal + total_vat) }} EUR</td></tr>
   </table>
+
   <div style="clear: both;"></div>
 
   <div class="greeting" style="margin-top: 50px;">
