@@ -12,9 +12,9 @@ app = Flask(__name__)
 pdf_storage = {}
 
 # --- Vul hier je Mailgun gegevens in ---
-MAILGUN_API_KEY = "jouw-mailgun-api-key"
-MAILGUN_DOMAIN = "jouw-mailgun-domein"  # Bijvoorbeeld: sandbox1234.mailgun.org
-FROM_EMAIL = f"Factuur App <mailgun@{MAILGUN_DOMAIN}>"
+MAILGUN_API_KEY = "pubkey-e68319e4f97a3fc0d4a8220470c2c244"
+MAILGUN_DOMAIN = "sandbox47c183b04a5747729ab799b6cd6fe40f.mailgun.org"  # Bijvoorbeeld: sandbox1234.mailgun.org
+FROM_EMAIL = f"postmaster@sandbox47c183b04a5747729ab799b6cd6fe40f.mailgun.org"
 # ----------------------------------------
 
 translations = {
