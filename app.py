@@ -85,7 +85,44 @@ translations = {
         'language': 'Language',
         'company_name': 'Company Name',
     },
-    # Voeg hier alle andere talen toe zoals in je oorspronkelijke code
+    'ar': {
+        'title': 'فاتورة سريعة',
+        'invoice_number': 'رقم الفاتورة',
+        'date': 'التاريخ',
+        'invoice_to': 'الفاتورة إلى:',
+        'description': 'الوصف',
+        'quantity': 'الكمية',
+        'price': 'السعر',
+        'vat_percent': 'ضريبة القيمة المضافة%',
+        'amount': 'المبلغ',
+        'subtotal': 'المجموع الفرعي (بدون ضريبة):',
+        'total_vat': 'إجمالي ضريبة القيمة المضافة:',
+        'total': 'الإجمالي (شامل الضريبة):',
+        'greeting': 'مع أطيب التحيات،',
+        'signature': 'التوقيع:',
+        'company_info': 'بيانات الشركة',
+        'client_info': 'بيانات العميل',
+        'service': 'الخدمة',
+        'price_per_unit': 'السعر للوحدة',
+        'add_service': 'إضافة خدمة',
+        'signature_label': 'التوقيع',
+        'clear_signature': 'مسح التوقيع',
+        'download_invoice': 'فتح الفاتورة',
+        'save_company': 'حفظ بيانات الشركة',
+        'clear_company': 'مسح بيانات الشركة',
+        'upload_logo': 'تحميل شعارك (اختياري)',
+        'street': 'الشارع ورقم المنزل',
+        'postcode': 'الرمز البريدي',
+        'city': 'المدينة',
+        'country': 'الدولة',
+        'kvk': 'رقم السجل التجاري',
+        'vat': 'رقم الضريبة',
+        'iban': 'رقم الحساب البنكي الدولي',
+        'client_name': 'اسم العميل',
+        'language': 'اللغة',
+        'company_name': 'اسم الشركة',
+    },
+    # Je kunt hier de andere talen toevoegen zoals voorheen...
 }
 
 def get_translation():
@@ -187,99 +224,52 @@ INDEX_HTML = '''
 <title>{{ t.title }}</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap&subset=arabic" rel="stylesheet" />
 <style>
+  /* Aurora style background */
   body {
-    background: linear-gradient(135deg, #e0f7fa 0%, #ffffff 100%);
-    font-family: 'Poppins', sans-serif;
     margin: 0; padding: 20px;
     min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    background-size: 600% 600%;
+    animation: aurora 20s ease infinite;
     display: flex; align-items: center; justify-content: center;
     direction: {{ 'rtl' if lang == 'ar' else 'ltr' }};
-    text-align: {{ 'right' if lang == 'ar' else 'left' }};
+    color: #e0f7fa;
   }
+  @keyframes aurora {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+  }
+
   .container {
-    width: 100%; max-width: 900px;
-    background: white;
-    padding: 30px;
+    background: rgba(255,255,255,0.95);
     border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-  }
-  h1 {text-align: center; color: #007bff; margin-bottom: 30px;}
-  form {display: flex; flex-direction: column; gap: 20px;}
-  .block {padding: 20px; border-radius: 12px; margin-bottom: 20px; background-color: #f9f9f9;}
-  .bedrijf {background-color: #e6f2ff;}
-  .klant {background-color: #fff3e6;}
-  label {
-    display: block;
-    margin-top: 10px;
-    font-weight: 500;
-    font-size: 14px;
-    color: #555;
-  }
-  input, select {
+    padding: 30px;
+    max-width: 900px;
     width: 100%;
-    padding: 12px;
-    margin-top: 5px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-    font-size: 14px;
-    box-sizing: border-box;
+    box-shadow: 0 0 20px rgba(0, 128, 128, 0.6);
+    color: #004d40;
   }
-  .dienst-block {
-    border: 1px solid #ccc;
-    padding: 15px;
-    border-radius: 12px;
-    margin-top: 15px;
-    background-color: #f9f9f9;
-    position: relative;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+
+  h1 {
+    text-align: center;
+    color: #00695c;
+    margin-bottom: 30px;
+    font-weight: 700;
+    text-shadow: 0 0 5px #004d40;
   }
-  .remove-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: red;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-  }
-  button {
-    padding: 15px;
-    border: none;
-    border-radius: 30px;
-    background-color: #007bff;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  button:hover {
-    background-color: #0056b3;
-  }
-  .button-group {
+
+  form {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-top: 15px;
+    gap: 20px;
   }
-  canvas {
-    border: 2px solid #ccc;
-    border-radius: 8px;
-    margin-top: 10px;
-    width: 100%;
-    height: 200px;
-  }
+
   .form-grid {
     display: block;
   }
+
   @media (min-width: 768px) {
     .form-grid {
       display: grid;
@@ -287,6 +277,108 @@ INDEX_HTML = '''
       gap: 20px;
     }
   }
+
+  .block {
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    background: #e0f2f1;
+    box-shadow: 0 2px 8px rgba(0, 77, 64, 0.1);
+  }
+  .bedrijf {
+    background: #b2dfdb;
+  }
+  .klant {
+    background: #80cbc4;
+  }
+
+  label {
+    display: block;
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    color: #004d40;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 12px 15px;
+    margin-top: 5px;
+    border-radius: 10px;
+    border: 1.5px solid #004d40;
+    font-size: 15px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+  }
+  input:focus, select:focus {
+    outline: none;
+    border-color: #00796b;
+    box-shadow: 0 0 10px #004d40a0;
+    background-color: #e0f2f1;
+  }
+
+  .dienst-block {
+    border: 1px solid #004d40;
+    padding: 15px;
+    border-radius: 12px;
+    margin-top: 15px;
+    background: #b2dfdb;
+    position: relative;
+    box-shadow: 0 2px 6px rgba(0,77,64,0.2);
+  }
+
+  .remove-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #d32f2f;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 28px;
+    text-align: center;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  .remove-btn:hover {
+    background-color: #9a0007;
+  }
+
+  button {
+    background: linear-gradient(135deg, #00796b, #004d40);
+    border: none;
+    border-radius: 30px;
+    color: #e0f2f1;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 15px;
+    transition: background 0.3s ease;
+  }
+  button:hover {
+    background: linear-gradient(135deg, #004d40, #00796b);
+  }
+
+  .button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+  }
+
+  canvas {
+    border: 2px solid #004d40;
+    border-radius: 10px;
+    margin-top: 10px;
+    width: 100%;
+    height: 200px;
+    background: #e0f2f1;
+  }
+
   .language-select {
     margin-bottom: 20px;
     font-size: 14px;
@@ -299,13 +391,14 @@ INDEX_HTML = '''
     <form id="languageForm" class="language-select" method="GET" action="/">
       <label for="langSelect">{{ t.language }}:</label>
       <select id="langSelect" name="lang" onchange="document.getElementById('languageForm').submit()">
-        {% for key in translations %}
-          <option value="{{ key }}" {% if lang == key %}selected{% endif %}>{{ translations[key].title }}</option>
+        {% for key, val in translations.items() %}
+          <option value="{{ key }}" {% if lang == key %}selected{% endif %}>{{ val.language if val.language else val.title }}</option>
         {% endfor %}
       </select>
     </form>
 
     <h1>{{ t.title }}</h1>
+
     <form method="POST" action="/generate?lang={{ lang }}" enctype="multipart/form-data" id="invoiceForm">
       <label>{{ t.invoice_number }}:</label>
       <input name="factuurnummer" placeholder="Bijv. FACT-2025-001" required />
@@ -377,9 +470,9 @@ INDEX_HTML = '''
         <label>{{ t.service }}:</label>
         <input name='dienst_${dienstIndex}' required />
         <label>{{ t.quantity }}:</label>
-        <input name='aantal_${dienstIndex}' type='number' required />
+        <input name='aantal_${dienstIndex}' type='number' min='1' required />
         <label>{{ t.price_per_unit }}:</label>
-        <input name='prijs_${dienstIndex}' type='number' step='0.01' required />
+        <input name='prijs_${dienstIndex}' type='number' step='0.01' min='0' required />
         <label>{{ t.vat_percent }}:</label>
         <select name='btw_${dienstIndex}'>
           <option value='0'>0%</option>
@@ -474,7 +567,7 @@ PDF_HTML = '''
     text-align: {{ 'right' if lang == 'ar' else 'left' }};
   }
   .header {
-    border-bottom: 2px solid #007bff;
+    border-bottom: 2px solid #00796b;
     padding-bottom: 10px;
     margin-bottom: 20px;
     overflow: auto;
@@ -486,24 +579,27 @@ PDF_HTML = '''
   .company-details {
     float: right;
     text-align: right;
+    color: #004d40;
   }
   .invoice-title {
     font-size: 18pt;
     font-weight: bold;
     margin-bottom: 20px;
     clear: both;
+    color: #00796b;
   }
   table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
+    color: #004d40;
   }
   th, td {
-    border: 1px solid #ddd;
+    border: 1px solid #004d40;
     padding: 8px;
   }
   th {
-    background-color: #e6f2ff;
+    background-color: #b2dfdb;
     text-align: center;
   }
   .totals td {
@@ -580,7 +676,7 @@ PDF_HTML = '''
 
   <div style="clear: both;"></div>
 
-  <div class="greeting" style="margin-top: 50px;">
+  <div class="greeting" style="margin-top: 50px; color: #004d40;">
     {{ t.greeting }}<br />
     {{ bedrijfsnaam }}
   </div>
