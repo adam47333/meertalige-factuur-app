@@ -48,6 +48,7 @@ translations = {
         'language': 'Taal',
         'company_name': 'Bedrijfsnaam',
     },
+    # ... hier komen alle andere talen zoals in je originele code ...
     'en': {
         'title': 'Quick Invoice',
         'invoice_number': 'Invoice Number',
@@ -122,7 +123,7 @@ translations = {
         'language': 'اللغة',
         'company_name': 'اسم الشركة',
     },
-    # Je kunt hier de andere talen toevoegen zoals voorheen...
+    # Voeg hier gerust andere talen toe zoals eerder ...
 }
 
 def get_translation():
@@ -134,7 +135,7 @@ def get_translation():
 @app.route('/', methods=['GET'])
 def index():
     t, lang = get_translation()
-    return render_template_string(INDEX_HTML, t=t, lang=lang, translations=translations)
+    return render_template_string(INDEX_HTML, t=t, lang=lang)
 
 @app.route('/generate', methods=['POST'])
 def generate_pdf():
@@ -224,52 +225,155 @@ INDEX_HTML = '''
 <title>{{ t.title }}</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap&subset=arabic" rel="stylesheet" />
 <style>
-  /* Aurora style background */
+  /* Aurora gradient background */
   body {
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    font-family: 'Poppins', sans-serif;
     margin: 0; padding: 20px;
     min-height: 100vh;
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-    background-size: 600% 600%;
-    animation: aurora 20s ease infinite;
     display: flex; align-items: center; justify-content: center;
     direction: {{ 'rtl' if lang == 'ar' else 'ltr' }};
+    text-align: {{ 'right' if lang == 'ar' else 'left' }};
     color: #e0f7fa;
   }
-  @keyframes aurora {
-    0%{background-position:0% 50%}
-    50%{background-position:100% 50%}
-    100%{background-position:0% 50%}
-  }
-
   .container {
-    background: rgba(255,255,255,0.95);
-    border-radius: 15px;
+    width: 100%; max-width: 900px;
+    background: rgba(255 255 255 / 0.05);
     padding: 30px;
-    max-width: 900px;
-    width: 100%;
-    box-shadow: 0 0 20px rgba(0, 128, 128, 0.6);
-    color: #004d40;
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
   }
-
   h1 {
     text-align: center;
-    color: #00695c;
+    font-weight: 900;
+    font-size: 3rem;
+    background: linear-gradient(90deg, #00f5a0, #00d2ff, #0077ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     margin-bottom: 30px;
-    font-weight: 700;
-    text-shadow: 0 0 5px #004d40;
+    text-shadow: 0 0 8px rgba(0, 255, 180, 0.7);
   }
-
   form {
+    display: flex; flex-direction: column; gap: 20px;
+  }
+  .block {
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    background: rgba(255 255 255 / 0.1);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+  }
+  .bedrijf {
+    background: rgba(0, 150, 136, 0.15);
+  }
+  .klant {
+    background: rgba(3, 169, 244, 0.15);
+  }
+  label {
+    display: block;
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    color: #b2dfdb;
+  }
+  input, select {
+    width: 100%;
+    padding: 14px;
+    margin-top: 5px;
+    border-radius: 10px;
+    border: 2px solid #009688;
+    box-shadow: inset 0 1px 5px rgba(0,0,0,0.15);
+    font-size: 15px;
+    box-sizing: border-box;
+    background: rgba(255 255 255 / 0.2);
+    color: #004d40;
+    transition: all 0.3s ease;
+  }
+  input:focus, select:focus {
+    border-color: #00e676;
+    outline: none;
+    background: #ffffffcc;
+    color: #004d40;
+    box-shadow: 0 0 10px #00e676;
+  }
+  /* Blur effect and security message after 5 sec if empty */
+  input.blur-secure, select.blur-secure {
+    filter: blur(3px);
+    pointer-events: none;
+    position: relative;
+  }
+  input.blur-secure::after, select.blur-secure::after {
+    content: "Security Protection";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #ff1744;
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .dienst-block {
+    border: 1px solid #00bfa5;
+    padding: 15px;
+    border-radius: 12px;
+    margin-top: 15px;
+    background: rgba(0, 255, 255, 0.1);
+    position: relative;
+    box-shadow: 0 0 15px #00e67660;
+  }
+  .remove-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #ff5252;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 0 6px #ff5252;
+  }
+  button {
+    padding: 15px;
+    border: none;
+    border-radius: 30px;
+    background: linear-gradient(90deg, #00f5a0, #00d2ff);
+    color: #004d40;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease;
+    box-shadow: 0 0 10px #00e676a0;
+  }
+  button:hover {
+    background: linear-gradient(90deg, #00d2ff, #00f5a0);
+    color: #00251a;
+    box-shadow: 0 0 20px #00e676ee;
+  }
+  .button-group {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
+    margin-top: 15px;
   }
-
+  canvas {
+    border: 2px solid #009688;
+    border-radius: 10px;
+    margin-top: 10px;
+    width: 100%;
+    height: 220px;
+    background: rgba(255 255 255 / 0.15);
+    box-shadow: 0 0 15px #00e676aa inset;
+  }
   .form-grid {
     display: block;
   }
-
   @media (min-width: 768px) {
     .form-grid {
       display: grid;
@@ -277,112 +381,11 @@ INDEX_HTML = '''
       gap: 20px;
     }
   }
-
-  .block {
-    padding: 20px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    background: #e0f2f1;
-    box-shadow: 0 2px 8px rgba(0, 77, 64, 0.1);
-  }
-  .bedrijf {
-    background: #b2dfdb;
-  }
-  .klant {
-    background: #80cbc4;
-  }
-
-  label {
-    display: block;
-    margin-top: 10px;
-    font-weight: 600;
-    font-size: 15px;
-    color: #004d40;
-  }
-
-  input, select {
-    width: 100%;
-    padding: 12px 15px;
-    margin-top: 5px;
-    border-radius: 10px;
-    border: 1.5px solid #004d40;
-    font-size: 15px;
-    box-sizing: border-box;
-    transition: all 0.3s ease;
-  }
-  input:focus, select:focus {
-    outline: none;
-    border-color: #00796b;
-    box-shadow: 0 0 10px #004d40a0;
-    background-color: #e0f2f1;
-  }
-
-  .dienst-block {
-    border: 1px solid #004d40;
-    padding: 15px;
-    border-radius: 12px;
-    margin-top: 15px;
-    background: #b2dfdb;
-    position: relative;
-    box-shadow: 0 2px 6px rgba(0,77,64,0.2);
-  }
-
-  .remove-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: #d32f2f;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    font-size: 18px;
-    line-height: 28px;
-    text-align: center;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-  }
-  .remove-btn:hover {
-    background-color: #9a0007;
-  }
-
-  button {
-    background: linear-gradient(135deg, #00796b, #004d40);
-    border: none;
-    border-radius: 30px;
-    color: #e0f2f1;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 700;
-    padding: 15px;
-    transition: background 0.3s ease;
-  }
-  button:hover {
-    background: linear-gradient(135deg, #004d40, #00796b);
-  }
-
-  .button-group {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 15px;
-  }
-
-  canvas {
-    border: 2px solid #004d40;
-    border-radius: 10px;
-    margin-top: 10px;
-    width: 100%;
-    height: 200px;
-    background: #e0f2f1;
-  }
-
   .language-select {
     margin-bottom: 20px;
-    font-size: 14px;
+    font-size: 15px;
     text-align: left;
+    color: #b2dfdb;
   }
 </style>
 </head>
@@ -391,14 +394,20 @@ INDEX_HTML = '''
     <form id="languageForm" class="language-select" method="GET" action="/">
       <label for="langSelect">{{ t.language }}:</label>
       <select id="langSelect" name="lang" onchange="document.getElementById('languageForm').submit()">
-        {% for key, val in translations.items() %}
-          <option value="{{ key }}" {% if lang == key %}selected{% endif %}>{{ val.language if val.language else val.title }}</option>
-        {% endfor %}
+        <option value="nl" {% if lang == 'nl' %}selected{% endif %}>Nederlands</option>
+        <option value="de" {% if lang == 'de' %}selected{% endif %}>Deutsch</option>
+        <option value="fr" {% if lang == 'fr' %}selected{% endif %}>Français</option>
+        <option value="es" {% if lang == 'es' %}selected{% endif %}>Español</option>
+        <option value="pt" {% if lang == 'pt' %}selected{% endif %}>Português</option>
+        <option value="sv" {% if lang == 'sv' %}selected{% endif %}>Svenska</option>
+        <option value="tr" {% if lang == 'tr' %}selected{% endif %}>Türkçe</option>
+        <option value="it" {% if lang == 'it' %}selected{% endif %}>Italiano</option>
+        <option value="ar" {% if lang == 'ar' %}selected{% endif %}>العربية</option>
+        <option value="en" {% if lang == 'en' %}selected{% endif %}>English</option>
       </select>
     </form>
 
     <h1>{{ t.title }}</h1>
-
     <form method="POST" action="/generate?lang={{ lang }}" enctype="multipart/form-data" id="invoiceForm">
       <label>{{ t.invoice_number }}:</label>
       <input name="factuurnummer" placeholder="Bijv. FACT-2025-001" required />
@@ -470,9 +479,9 @@ INDEX_HTML = '''
         <label>{{ t.service }}:</label>
         <input name='dienst_${dienstIndex}' required />
         <label>{{ t.quantity }}:</label>
-        <input name='aantal_${dienstIndex}' type='number' min='1' required />
+        <input name='aantal_${dienstIndex}' type='number' min="1" required />
         <label>{{ t.price_per_unit }}:</label>
-        <input name='prijs_${dienstIndex}' type='number' step='0.01' min='0' required />
+        <input name='prijs_${dienstIndex}' type='number' step='0.01' min="0" required />
         <label>{{ t.vat_percent }}:</label>
         <select name='btw_${dienstIndex}'>
           <option value='0'>0%</option>
@@ -504,6 +513,7 @@ INDEX_HTML = '''
       signaturePad = new SignaturePad(canvas);
       resizeCanvas();
       loadCompanyInfo();
+      monitorInputsSecurity();
     };
 
     function saveSignature() {
@@ -545,8 +555,32 @@ INDEX_HTML = '''
       alert('{{ t.clear_company }}!');
     }
 
+    // Security blur effect after 5 seconds if input empty
+    function monitorInputsSecurity() {
+      const inputs = document.querySelectorAll('input[type="text"], input[type="number"], select');
+      inputs.forEach(input => {
+        input.addEventListener('input', () => {
+          clearTimeout(input._blurTimeout);
+          input.classList.remove('blur-secure');
+          if (input.value.trim() === '') {
+            input._blurTimeout = setTimeout(() => {
+              input.classList.add('blur-secure');
+            }, 5000);
+          }
+        });
+        // Trigger blur if empty on page load after 5 sec
+        if (input.value.trim() === '') {
+          input._blurTimeout = setTimeout(() => {
+            input.classList.add('blur-secure');
+          }, 5000);
+        }
+      });
+    }
+
     document.getElementById('invoiceForm').addEventListener('submit', function (e) {
       saveSignature();
+      // Remove blur effect to avoid issues submitting
+      document.querySelectorAll('.blur-secure').forEach(el => el.classList.remove('blur-secure'));
     });
   </script>
 </body>
@@ -567,7 +601,7 @@ PDF_HTML = '''
     text-align: {{ 'right' if lang == 'ar' else 'left' }};
   }
   .header {
-    border-bottom: 2px solid #00796b;
+    border-bottom: 2px solid #007bff;
     padding-bottom: 10px;
     margin-bottom: 20px;
     overflow: auto;
@@ -579,27 +613,24 @@ PDF_HTML = '''
   .company-details {
     float: right;
     text-align: right;
-    color: #004d40;
   }
   .invoice-title {
     font-size: 18pt;
     font-weight: bold;
     margin-bottom: 20px;
     clear: both;
-    color: #00796b;
   }
   table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
-    color: #004d40;
   }
   th, td {
-    border: 1px solid #004d40;
+    border: 1px solid #ddd;
     padding: 8px;
   }
   th {
-    background-color: #b2dfdb;
+    background-color: #e6f2ff;
     text-align: center;
   }
   .totals td {
@@ -676,7 +707,7 @@ PDF_HTML = '''
 
   <div style="clear: both;"></div>
 
-  <div class="greeting" style="margin-top: 50px; color: #004d40;">
+  <div class="greeting" style="margin-top: 50px;">
     {{ t.greeting }}<br />
     {{ bedrijfsnaam }}
   </div>
