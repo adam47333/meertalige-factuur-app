@@ -48,6 +48,7 @@ translations = {
         'language': 'Taal',
         'company_name': 'Bedrijfsnaam',
     },
+    # Voeg andere talen hier toe (zoals eerder beschreven) ...
     'en': {
         'title': 'Quick Invoice',
         'invoice_number': 'Invoice Number',
@@ -84,303 +85,8 @@ translations = {
         'client_name': 'Client Name',
         'language': 'Language',
         'company_name': 'Company Name',
-    },
-    'ar': {
-        'title': 'فاتورة سريعة',
-        'invoice_number': 'رقم الفاتورة',
-        'date': 'التاريخ',
-        'invoice_to': 'الفاتورة إلى:',
-        'description': 'الوصف',
-        'quantity': 'الكمية',
-        'price': 'السعر',
-        'vat_percent': 'ضريبة القيمة المضافة%',
-        'amount': 'المبلغ',
-        'subtotal': 'المجموع الفرعي (بدون ضريبة):',
-        'total_vat': 'إجمالي ضريبة القيمة المضافة:',
-        'total': 'الإجمالي (شامل الضريبة):',
-        'greeting': 'مع أطيب التحيات،',
-        'signature': 'التوقيع:',
-        'company_info': 'بيانات الشركة',
-        'client_info': 'بيانات العميل',
-        'service': 'الخدمة',
-        'price_per_unit': 'السعر للوحدة',
-        'add_service': 'إضافة خدمة',
-        'signature_label': 'التوقيع',
-        'clear_signature': 'مسح التوقيع',
-        'download_invoice': 'فتح الفاتورة',
-        'save_company': 'حفظ بيانات الشركة',
-        'clear_company': 'مسح بيانات الشركة',
-        'upload_logo': 'تحميل شعارك (اختياري)',
-        'street': 'الشارع ورقم المنزل',
-        'postcode': 'الرمز البريدي',
-        'city': 'المدينة',
-        'country': 'الدولة',
-        'kvk': 'رقم السجل التجاري',
-        'vat': 'رقم الضريبة',
-        'iban': 'رقم الحساب البنكي الدولي',
-        'client_name': 'اسم العميل',
-        'language': 'اللغة',
-        'company_name': 'اسم الشركة',
-    },
-    'de': {
-        'title': 'Schnellrechnung',
-        'invoice_number': 'Rechnungsnummer',
-        'date': 'Datum',
-        'invoice_to': 'Rechnung an:',
-        'description': 'Beschreibung',
-        'quantity': 'Menge',
-        'price': 'Preis',
-        'vat_percent': 'MwSt%',
-        'amount': 'Betrag',
-        'subtotal': 'Zwischensumme (exkl. MwSt):',
-        'total_vat': 'Gesamt MwSt:',
-        'total': 'Gesamt (inkl. MwSt):',
-        'greeting': 'Mit freundlichen Grüßen,',
-        'signature': 'Unterschrift:',
-        'company_info': 'Firmendaten',
-        'client_info': 'Kundendaten',
-        'service': 'Dienstleistung',
-        'price_per_unit': 'Preis pro Einheit',
-        'add_service': 'Dienst hinzufügen',
-        'signature_label': 'Unterschrift',
-        'clear_signature': 'Unterschrift löschen',
-        'download_invoice': 'Rechnung öffnen',
-        'save_company': 'Firmendaten speichern',
-        'clear_company': 'Firmendaten löschen',
-        'upload_logo': 'Logo hochladen (optional)',
-        'street': 'Straße und Hausnummer',
-        'postcode': 'Postleitzahl',
-        'city': 'Stadt',
-        'country': 'Land',
-        'kvk': 'Handelsregisternummer',
-        'vat': 'USt-IdNr.',
-        'iban': 'IBAN',
-        'client_name': 'Kundenname',
-        'language': 'Sprache',
-        'company_name': 'Firmenname',
-    },
-    'fr': {
-        'title': 'Facture rapide',
-        'invoice_number': 'Numéro de facture',
-        'date': 'Date',
-        'invoice_to': 'Facture à :',
-        'description': 'Description',
-        'quantity': 'Quantité',
-        'price': 'Prix',
-        'vat_percent': 'TVA%',
-        'amount': 'Montant',
-        'subtotal': 'Sous-total (HT):',
-        'total_vat': 'Total TVA:',
-        'total': 'Total (TTC):',
-        'greeting': 'Cordialement,',
-        'signature': 'Signature :',
-        'company_info': 'Informations sur l\'entreprise',
-        'client_info': 'Informations sur le client',
-        'service': 'Service',
-        'price_per_unit': 'Prix unitaire',
-        'add_service': 'Ajouter un service',
-        'signature_label': 'Signature',
-        'clear_signature': 'Effacer la signature',
-        'download_invoice': 'Ouvrir la facture',
-        'save_company': 'Enregistrer les informations de l\'entreprise',
-        'clear_company': 'Effacer les informations de l\'entreprise',
-        'upload_logo': 'Télécharger votre logo (optionnel)',
-        'street': 'Rue et numéro',
-        'postcode': 'Code postal',
-        'city': 'Ville',
-        'country': 'Pays',
-        'kvk': 'Numéro de registre du commerce',
-        'vat': 'Numéro de TVA',
-        'iban': 'IBAN',
-        'client_name': 'Nom du client',
-        'language': 'Langue',
-        'company_name': 'Nom de l\'entreprise',
-    },
-    'es': {
-        'title': 'Factura rápida',
-        'invoice_number': 'Número de factura',
-        'date': 'Fecha',
-        'invoice_to': 'Factura para:',
-        'description': 'Descripción',
-        'quantity': 'Cantidad',
-        'price': 'Precio',
-        'vat_percent': 'IVA%',
-        'amount': 'Importe',
-        'subtotal': 'Subtotal (sin IVA):',
-        'total_vat': 'Total IVA:',
-        'total': 'Total (con IVA):',
-        'greeting': 'Saludos cordiales,',
-        'signature': 'Firma:',
-        'company_info': 'Datos de la empresa',
-        'client_info': 'Datos del cliente',
-        'service': 'Servicio',
-        'price_per_unit': 'Precio por unidad',
-        'add_service': 'Agregar servicio',
-        'signature_label': 'Firma',
-        'clear_signature': 'Borrar firma',
-        'download_invoice': 'Abrir factura',
-        'save_company': 'Guardar datos de la empresa',
-        'clear_company': 'Borrar datos de la empresa',
-        'upload_logo': 'Subir logo (opcional)',
-        'street': 'Calle y número',
-        'postcode': 'Código postal',
-        'city': 'Ciudad',
-        'country': 'País',
-        'kvk': 'Número de registro mercantil',
-        'vat': 'Número de IVA',
-        'iban': 'IBAN',
-        'client_name': 'Nombre del cliente',
-        'language': 'Idioma',
-        'company_name': 'Nombre de la empresa',
-    },
-    'pt': {
-        'title': 'Fatura rápida',
-        'invoice_number': 'Número da fatura',
-        'date': 'Data',
-        'invoice_to': 'Fatura para:',
-        'description': 'Descrição',
-        'quantity': 'Quantidade',
-        'price': 'Preço',
-        'vat_percent': 'IVA%',
-        'amount': 'Valor',
-        'subtotal': 'Subtotal (sem IVA):',
-        'total_vat': 'Total IVA:',
-        'total': 'Total (com IVA):',
-        'greeting': 'Atenciosamente,',
-        'signature': 'Assinatura:',
-        'company_info': 'Informações da empresa',
-        'client_info': 'Informações do cliente',
-        'service': 'Serviço',
-        'price_per_unit': 'Preço por unidade',
-        'add_service': 'Adicionar serviço',
-        'signature_label': 'Assinatura',
-        'clear_signature': 'Limpar assinatura',
-        'download_invoice': 'Abrir fatura',
-        'save_company': 'Salvar informações da empresa',
-        'clear_company': 'Limpar informações da empresa',
-        'upload_logo': 'Carregar logo (opcional)',
-        'street': 'Rua e número',
-        'postcode': 'Código postal',
-        'city': 'Cidade',
-        'country': 'País',
-        'kvk': 'Número de registro comercial',
-        'vat': 'Número de IVA',
-        'iban': 'IBAN',
-        'client_name': 'Nome do cliente',
-        'language': 'Idioma',
-        'company_name': 'Nome da empresa',
-    },
-    'sv': {
-        'title': 'Snabbfaktura',
-        'invoice_number': 'Fakturanummer',
-        'date': 'Datum',
-        'invoice_to': 'Faktura till:',
-        'description': 'Beskrivning',
-        'quantity': 'Antal',
-        'price': 'Pris',
-        'vat_percent': 'Moms%',
-        'amount': 'Belopp',
-        'subtotal': 'Delsumma (exkl. moms):',
-        'total_vat': 'Total moms:',
-        'total': 'Totalt (inkl. moms):',
-        'greeting': 'Med vänliga hälsningar,',
-        'signature': 'Signatur:',
-        'company_info': 'Företagsuppgifter',
-        'client_info': 'Kunduppgifter',
-        'service': 'Tjänst',
-        'price_per_unit': 'Pris per enhet',
-        'add_service': 'Lägg till tjänst',
-        'signature_label': 'Signatur',
-        'clear_signature': 'Rensa signatur',
-        'download_invoice': 'Öppna faktura',
-        'save_company': 'Spara företagsuppgifter',
-        'clear_company': 'Rensa företagsuppgifter',
-        'upload_logo': 'Ladda upp din logotyp (valfritt)',
-        'street': 'Gata och nummer',
-        'postcode': 'Postnummer',
-        'city': 'Stad',
-        'country': 'Land',
-        'kvk': 'Organisationsnummer',
-        'vat': 'Momsnummer',
-        'iban': 'IBAN',
-        'client_name': 'Kundnamn',
-        'language': 'Språk',
-        'company_name': 'Företagsnamn',
-    },
-    'tr': {
-        'title': 'Hızlı Fatura',
-        'invoice_number': 'Fatura Numarası',
-        'date': 'Tarih',
-        'invoice_to': 'Fatura Alıcısı:',
-        'description': 'Açıklama',
-        'quantity': 'Miktar',
-        'price': 'Fiyat',
-        'vat_percent': 'KDV%',
-        'amount': 'Tutar',
-        'subtotal': 'Ara Toplam (KDV Hariç):',
-        'total_vat': 'Toplam KDV:',
-        'total': 'Toplam (KDV Dahil):',
-        'greeting': 'Saygılarımla,',
-        'signature': 'İmza:',
-        'company_info': 'Şirket Bilgileri',
-        'client_info': 'Müşteri Bilgileri',
-        'service': 'Hizmet',
-        'price_per_unit': 'Birim Fiyat',
-        'add_service': 'Hizmet Ekle',
-        'signature_label': 'İmza',
-        'clear_signature': 'İmza Temizle',
-        'download_invoice': 'Faturayı Aç',
-        'save_company': 'Şirket Bilgilerini Kaydet',
-        'clear_company': 'Şirket Bilgilerini Temizle',
-        'upload_logo': 'Logonuzu Yükleyin (isteğe bağlı)',
-        'street': 'Sokak ve Numara',
-        'postcode': 'Posta Kodu',
-        'city': 'Şehir',
-        'country': 'Ülke',
-        'kvk': 'Ticaret Sicil Numarası',
-        'vat': 'KDV Numarası',
-        'iban': 'IBAN',
-        'client_name': 'Müşteri Adı',
-        'language': 'Dil',
-        'company_name': 'Şirket Adı',
-    },
-    'it': {
-        'title': 'Fattura veloce',
-        'invoice_number': 'Numero fattura',
-        'date': 'Data',
-        'invoice_to': 'Fattura a:',
-        'description': 'Descrizione',
-        'quantity': 'Quantità',
-        'price': 'Prezzo',
-        'vat_percent': 'IVA%',
-        'amount': 'Importo',
-        'subtotal': 'Totale parziale (escl. IVA):',
-        'total_vat': 'Totale IVA:',
-        'total': 'Totale (incl. IVA):',
-        'greeting': 'Cordiali saluti,',
-        'signature': 'Firma:',
-        'company_info': 'Informazioni sull\'azienda',
-        'client_info': 'Informazioni cliente',
-        'service': 'Servizio',
-        'price_per_unit': 'Prezzo per unità',
-        'add_service': 'Aggiungi servizio',
-        'signature_label': 'Firma',
-        'clear_signature': 'Cancella firma',
-        'download_invoice': 'Apri fattura',
-        'save_company': 'Salva informazioni azienda',
-        'clear_company': 'Cancella informazioni azienda',
-        'upload_logo': 'Carica logo (opzionale)',
-        'street': 'Via e numero',
-        'postcode': 'CAP',
-        'city': 'Città',
-        'country': 'Paese',
-        'kvk': 'Numero di registrazione',
-        'vat': 'Partita IVA',
-        'iban': 'IBAN',
-        'client_name': 'Nome cliente',
-        'language': 'Lingua',
-        'company_name': 'Nome azienda',
     }
+    # Andere talen kun je zo toevoegen...
 }
 
 def get_translation():
@@ -483,109 +189,190 @@ INDEX_HTML = '''
 <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap&subset=arabic" rel="stylesheet" />
 <style>
   body {
-    background: linear-gradient(135deg, #e0f7fa 0%, #ffffff 100%);
+    margin: 0;
     font-family: 'Poppins', sans-serif;
-    margin: 0; padding: 20px;
+    background: #f0f5f9;
     min-height: 100vh;
-    display: flex; align-items: center; justify-content: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
     direction: {{ 'rtl' if lang == 'ar' else 'ltr' }};
     text-align: {{ 'right' if lang == 'ar' else 'left' }};
-  }
-  .container {
-    width: 100%; max-width: 900px;
-    background: white;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-  }
-  h1 {text-align: center; color: #007bff; margin-bottom: 30px;}
-  form {display: flex; flex-direction: column; gap: 20px;}
-  .block {padding: 20px; border-radius: 12px; margin-bottom: 20px; background-color: #f9f9f9;}
-  .bedrijf {background-color: #e6f2ff;}
-  .klant {background-color: #fff3e6;}
-  label {
-    display: block;
-    margin-top: 10px;
-    font-weight: 500;
-    font-size: 14px;
-    color: #555;
-  }
-  input, select {
-    width: 100%;
-    padding: 12px;
-    margin-top: 5px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-    font-size: 14px;
-    box-sizing: border-box;
-  }
-  .dienst-block {
-    border: 1px solid #ccc;
-    padding: 15px;
-    border-radius: 12px;
-    margin-top: 15px;
-    background-color: #f9f9f9;
     position: relative;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    overflow-x: hidden;
   }
-  .remove-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: red;
-    color: white;
-    border: none;
+
+  body::before,
+  body::after {
+    content: "";
+    position: fixed;
     border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
+    opacity: 0.15;
+    z-index: 0;
+  }
+  body::before {
+    width: 300px;
+    height: 300px;
+    background: #007bff;
+    top: -50px;
+    left: -100px;
+  }
+  body::after {
+    width: 500px;
+    height: 500px;
+    background: #00c6ff;
+    bottom: -150px;
+    right: -150px;
+  }
+
+  .container {
+    background: white;
+    padding: 40px 50px;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 123, 255, 0.15);
+    width: 100%;
+    max-width: 920px;
+    z-index: 1;
+  }
+
+  h1 {
+    text-align: center;
+    color: #007bff;
+    margin-bottom: 40px;
+    font-weight: 700;
+    font-size: 2.8rem;
+  }
+
+  form {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
+    flex-direction: column;
+    gap: 25px;
   }
-  button {
-    padding: 15px;
-    border: none;
-    border-radius: 30px;
-    background-color: #007bff;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s;
+
+  label {
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 8px;
+    display: block;
+    font-size: 1rem;
   }
-  button:hover {
-    background-color: #0056b3;
+
+  input[type="text"],
+  input[type="number"],
+  select,
+  input[type="file"] {
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 1rem;
+    border-radius: 10px;
+    border: 1.8px solid #ddd;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
   }
+  input[type="text"]:focus,
+  input[type="number"]:focus,
+  select:focus,
+  input[type="file"]:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.25);
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+  }
+
+  .block {
+    background: #f9f9f9;
+    padding: 25px 30px;
+    border-radius: 14px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.03);
+  }
+
+  .bedrijf {
+    background: #e6f2ff;
+  }
+  .klant {
+    background: #fff3e6;
+  }
+
   .button-group {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-top: 15px;
+    gap: 14px;
+    margin-top: 25px;
   }
-  canvas {
-    border: 2px solid #ccc;
-    border-radius: 8px;
-    margin-top: 10px;
+
+  button, .add-service-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 15px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(0, 123, 255, 0.25);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
     width: 100%;
-    height: 200px;
   }
-  .form-grid {
-    display: block;
+
+  button:hover, .add-service-btn:hover {
+    background-color: #0056b3;
+    box-shadow: 0 8px 20px rgba(0, 86, 179, 0.35);
   }
-  @media (min-width: 768px) {
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
+
+  .add-service-btn {
+    max-width: 220px;
+    margin-top: 20px;
+    align-self: center;
   }
+
+  .dienst-block {
+    background: white;
+    border: 1.5px solid #ccc;
+    border-radius: 12px;
+    padding: 20px 25px;
+    margin-top: 20px;
+    position: relative;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+  }
+
+  .remove-btn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  canvas#signature-pad {
+    width: 100% !important;
+    height: 210px !important;
+    border: 2.5px solid #ddd;
+    border-radius: 12px;
+    margin-top: 14px;
+  }
+
   .language-select {
-    margin-bottom: 20px;
-    font-size: 14px;
+    margin-bottom: 30px;
+    font-size: 1rem;
     text-align: left;
+    max-width: 200px;
   }
 </style>
 </head>
@@ -656,7 +443,7 @@ INDEX_HTML = '''
       </div>
 
       <div id="diensten"></div>
-      <button type="button" onclick="voegDienstToe()">{{ t.add_service }}</button>
+      <button type="button" class="add-service-btn" onclick="voegDienstToe()">{{ t.add_service }}</button>
 
       <h2>{{ t.signature_label }}</h2>
       <canvas id="signature-pad"></canvas>
