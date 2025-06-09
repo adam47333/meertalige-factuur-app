@@ -496,7 +496,14 @@ INDEX_HTML = '''
 <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap&subset=arabic" rel="stylesheet" />
 <style>
   body {
-    background: linear-gradient(135deg, #d0f0ea 0%, #e8f6f3 100%);
+    background: 
+      radial-gradient(circle at 20% 20%, rgba(255, 179, 128, 0.6), transparent 50%),
+      radial-gradient(circle at 80% 30%, rgba(129, 196, 242, 0.5), transparent 50%),
+      radial-gradient(circle at 60% 80%, rgba(255, 204, 153, 0.4), transparent 60%),
+      radial-gradient(circle at 30% 70%, rgba(162, 210, 255, 0.45), transparent 55%);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
     font-family: 'Poppins', sans-serif;
     color: #2e4a45;
     margin: 0; padding: 20px;
@@ -504,9 +511,6 @@ INDEX_HTML = '''
     display: flex; align-items: center; justify-content: center;
     direction: {{ 'rtl' if lang == 'ar' else 'ltr' }};
     text-align: {{ 'right' if lang == 'ar' else 'left' }};
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    background-size: cover;
   }
 
   .container {
