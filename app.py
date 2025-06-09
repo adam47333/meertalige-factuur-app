@@ -414,7 +414,7 @@ def get_translation():
 def send_email(to_email, pdf_bytes, subject="Factuur", body="Hier is uw factuur."):
     # VUL HIER JE EIGEN GEGEVENS IN:
     FROM_EMAIL = "snelfactuurtje@gmail.com"
-    FROM_PASSWORD = "ugpk ajfa zzma ceyp"
+    FROM_PASSWORD = "ugpkajfazzmaceyp"
 
     msg = EmailMessage()
     msg['Subject'] = subject
