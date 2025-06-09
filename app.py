@@ -8,6 +8,8 @@ from flask import Flask, request, render_template_string, send_file, redirect, u
 from weasyprint import HTML, CSS
 
 app = Flask(__name__)
+app.jinja_env.globals.update(enumerate=enumerate)  # <--- Hier toegevoegd
+
 pdf_storage = {}
 
 @app.template_filter('decimalcomma')
