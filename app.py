@@ -3,17 +3,13 @@ import os
 import io
 import base64
 import uuid
-import smtplib
-from email.message import EmailMessage
 from datetime import datetime
-from flask import Flask, request, render_template_string, send_file, redirect, url_for, abort, flash, get_flashed_messages
+from flask import Flask, request, render_template_string, send_file, redirect, url_for, abort
 from weasyprint import HTML, CSS
 
 app = Flask(__name__)
-app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'verander_dit_voor_prod')
 pdf_storage = {}
 
-# Vertalingen voor meertaligheid
 translations = {
     'nl': {
         'title': 'Snelfactuurtje',
@@ -51,10 +47,6 @@ translations = {
         'client_name': 'Klantnaam',
         'language': 'Taal',
         'company_name': 'Bedrijfsnaam',
-        'send_email': 'Stuur factuur naar e-mail',
-        'email_address': 'E-mailadres om factuur te ontvangen',
-        'email_sent_success': 'Factuur is succesvol verzonden naar de e-mail.',
-        'email_sent_error': 'Fout bij verzenden van e-mail:',
     },
     'en': {
         'title': 'Quick Invoice',
@@ -92,53 +84,8 @@ translations = {
         'client_name': 'Client Name',
         'language': 'Language',
         'company_name': 'Company Name',
-        'send_email': 'Send invoice to email',
-        'email_address': 'Email address to receive invoice',
-        'email_sent_success': 'Invoice successfully sent to email.',
-        'email_sent_error': 'Error sending email:',
     },
-    'ar': {
-        'title': 'فاتورة سريعة',
-        'invoice_number': 'رقم الفاتورة',
-        'date': 'التاريخ',
-        'invoice_to': 'الفاتورة إلى:',
-        'description': 'الوصف',
-        'quantity': 'الكمية',
-        'price': 'السعر',
-        'vat_percent': 'ضريبة القيمة المضافة%',
-        'amount': 'المبلغ',
-        'subtotal': 'المجموع الفرعي (بدون ضريبة):',
-        'total_vat': 'إجمالي ضريبة القيمة المضافة:',
-        'total': 'الإجمالي (شامل الضريبة):',
-        'greeting': 'مع أطيب التحيات،',
-        'signature': 'التوقيع:',
-        'company_info': 'بيانات الشركة',
-        'client_info': 'بيانات العميل',
-        'service': 'الخدمة',
-        'price_per_unit': 'السعر للوحدة',
-        'add_service': 'إضافة خدمة',
-        'signature_label': 'التوقيع',
-        'clear_signature': 'مسح التوقيع',
-        'download_invoice': 'فتح الفاتورة',
-        'save_company': 'حفظ بيانات الشركة',
-        'clear_company': 'مسح بيانات الشركة',
-        'upload_logo': 'تحميل شعارك (اختياري)',
-        'street': 'الشارع ورقم المنزل',
-        'postcode': 'الرمز البريدي',
-        'city': 'المدينة',
-        'country': 'الدولة',
-        'kvk': 'رقم السجل التجاري',
-        'vat': 'رقم الضريبة',
-        'iban': 'رقم الحساب البنكي الدولي',
-        'client_name': 'اسم العميل',
-        'language': 'اللغة',
-        'company_name': 'اسم الشركة',
-        'send_email': 'أرسل الفاتورة إلى البريد الإلكتروني',
-        'email_address': 'البريد الإلكتروني لاستلام الفاتورة',
-        'email_sent_success': 'تم إرسال الفاتورة إلى البريد الإلكتروني بنجاح.',
-        'email_sent_error': 'خطأ في إرسال البريد الإلكتروني:',
-    },
-    # Voeg hier eventueel meer talen toe indien gewenst...
+    # Voeg hier andere talen toe zoals voorheen...
 }
 
 def get_translation():
@@ -151,27 +98,6 @@ def get_translation():
 def index():
     t, lang = get_translation()
     return render_template_string(INDEX_HTML, t=t, lang=lang)
-
-def send_email_with_pdf(to_email, pdf_data, invoice_number, t):
-    # Vul hier je SMTP servergegevens in of gebruik environment variables
-    SMTP_SERVER = os.environ.get('SMTP_SERVER', 'smtp.example.com')
-    SMTP_PORT = int(os.environ.get('SMTP_PORT', '587'))
-    SMTP_USERNAME = os.environ.get('SMTP_USERNAME', 'user@example.com')
-    SMTP_PASSWORD = os.environ.get('SMTP_PASSWORD', 'yourpassword')
-    FROM_EMAIL = SMTP_USERNAME
-
-    msg = EmailMessage()
-    msg['Subject'] = f"Factuur / Invoice {invoice_number}"
-    msg['From'] = FROM_EMAIL
-    msg['To'] = to_email
-    msg.set_content(f"{t['greeting']} \n\n{t['invoice_number']}: {invoice_number}")
-
-    msg.add_attachment(pdf_data, maintype='application', subtype='pdf', filename='factuur.pdf')
-
-    with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as smtp:
-        smtp.starttls()
-        smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
-        smtp.send_message(msg)
 
 @app.route('/generate', methods=['POST'])
 def generate_pdf():
@@ -236,18 +162,6 @@ def generate_pdf():
 
         pdf_id = str(uuid.uuid4())
         pdf_storage[pdf_id] = pdf_file
-
-        # Check of PDF gemaild moet worden
-        if request.form.get('send_to_email') == 'on':
-            email_address = request.form.get('email_address', '').strip()
-            if email_address:
-                try:
-                    send_email_with_pdf(email_address, pdf_file, factuurnummer, t)
-                    flash(t['email_sent_success'], 'success')
-                except Exception as e:
-                    flash(f"{t['email_sent_error']} {e}", 'error')
-            else:
-                flash('E-mailadres is leeg.', 'error')
 
         return redirect(url_for('serve_pdf', pdf_id=pdf_id, lang=lang))
     except Exception as e:
@@ -378,14 +292,6 @@ INDEX_HTML = '''
     font-size: 14px;
     text-align: left;
   }
-  .flash-success {
-    color: green;
-    margin-bottom: 10px;
-  }
-  .flash-error {
-    color: red;
-    margin-bottom: 10px;
-  }
 </style>
 </head>
 <body>
@@ -405,14 +311,6 @@ INDEX_HTML = '''
         <option value="en" {% if lang == 'en' %}selected{% endif %}>English</option>
       </select>
     </form>
-
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="flash-{{ category }}">{{ message }}</div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
 
     <h1>{{ t.title }}</h1>
     <form method="POST" action="/generate?lang={{ lang }}" enctype="multipart/form-data" id="invoiceForm">
@@ -470,15 +368,7 @@ INDEX_HTML = '''
       <button type="button" onclick="clearSignature()">{{ t.clear_signature }}</button>
       <input type="hidden" id="handtekening" name="handtekening" />
 
-      <div style="margin-top:20px;">
-        <label><input type="checkbox" name="send_to_email" /> {{ t.send_email }}</label>
-      </div>
-      <div>
-        <label>{{ t.email_address }}:</label>
-        <input type="email" name="email_address" placeholder="example@example.com" />
-      </div>
-
-      <button type="submit" style="margin-top: 15px;">{{ t.download_invoice }}</button>
+      <button type="submit">{{ t.download_invoice }}</button>
     </form>
   </div>
 
