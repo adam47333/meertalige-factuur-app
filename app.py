@@ -6,6 +6,8 @@ import uuid
 from datetime import datetime
 from flask import Flask, request, render_template_string, send_file, redirect, url_for, abort
 from weasyprint import HTML, CSS
+import smtplib
+from email.message import EmailMessage
 
 app = Flask(__name__)
 pdf_storage = {}
@@ -47,6 +49,8 @@ translations = {
         'client_name': 'Klantnaam',
         'language': 'Taal',
         'company_name': 'Bedrijfsnaam',
+        'send_email_label': 'Verstuur factuur per e-mail',
+        'email_label': 'Email ontvanger (optioneel)'
     },
     'en': {
         'title': 'Quick Invoice',
@@ -84,6 +88,8 @@ translations = {
         'client_name': 'Client Name',
         'language': 'Language',
         'company_name': 'Company Name',
+        'send_email_label': 'Send invoice by email',
+        'email_label': 'Recipient email (optional)'
     },
     'ar': {
         'title': 'فاتورة سريعة',
@@ -121,6 +127,8 @@ translations = {
         'client_name': 'اسم العميل',
         'language': 'اللغة',
         'company_name': 'اسم الشركة',
+        'send_email_label': 'أرسل الفاتورة عبر البريد الإلكتروني',
+        'email_label': 'البريد الإلكتروني للمستلم (اختياري)'
     },
     'de': {
         'title': 'Schnellrechnung',
@@ -158,6 +166,8 @@ translations = {
         'client_name': 'Kundenname',
         'language': 'Sprache',
         'company_name': 'Firmenname',
+        'send_email_label': 'Rechnung per E-Mail senden',
+        'email_label': 'Empfänger-E-Mail (optional)'
     },
     'fr': {
         'title': 'Facture rapide',
@@ -195,6 +205,8 @@ translations = {
         'client_name': 'Nom du client',
         'language': 'Langue',
         'company_name': 'Nom de l\'entreprise',
+        'send_email_label': 'Envoyer la facture par email',
+        'email_label': 'Email destinataire (optionnel)'
     },
     'es': {
         'title': 'Factura rápida',
@@ -232,6 +244,8 @@ translations = {
         'client_name': 'Nombre del cliente',
         'language': 'Idioma',
         'company_name': 'Nombre de la empresa',
+        'send_email_label': 'Enviar factura por email',
+        'email_label': 'Email destinatario (opcional)'
     },
     'pt': {
         'title': 'Fatura rápida',
@@ -269,6 +283,8 @@ translations = {
         'client_name': 'Nome do cliente',
         'language': 'Idioma',
         'company_name': 'Nome da empresa',
+        'send_email_label': 'Enviar fatura por email',
+        'email_label': 'Email destinatário (opcional)'
     },
     'sv': {
         'title': 'Snabbfaktura',
@@ -306,6 +322,8 @@ translations = {
         'client_name': 'Kundnamn',
         'language': 'Språk',
         'company_name': 'Företagsnamn',
+        'send_email_label': 'Skicka faktura via e-post',
+        'email_label': 'Mottagarens e-post (valfritt)'
     },
     'tr': {
         'title': 'Hızlı Fatura',
@@ -343,6 +361,8 @@ translations = {
         'client_name': 'Müşteri Adı',
         'language': 'Dil',
         'company_name': 'Şirket Adı',
+        'send_email_label': 'Faturayı e-posta ile gönder',
+        'email_label': 'Alıcı e-postası (isteğe bağlı)'
     },
     'it': {
         'title': 'Fattura veloce',
@@ -380,6 +400,8 @@ translations = {
         'client_name': 'Nome cliente',
         'language': 'Lingua',
         'company_name': 'Nome azienda',
+        'send_email_label': 'Invia fattura via email',
+        'email_label': 'Email destinatario (opzionale)'
     }
 }
 
@@ -388,6 +410,22 @@ def get_translation():
     if lang not in translations:
         lang = 'nl'
     return translations[lang], lang
+
+def send_email(to_email, pdf_bytes, subject="Factuur", body="Hier is uw factuur."):
+    # VUL HIER JE EIGEN GEGEVENS IN:
+    FROM_EMAIL = "jouw-email@gmail.com"
+    FROM_PASSWORD = "je-app-wachtwoord"
+
+    msg = EmailMessage()
+    msg['Subject'] = subject
+    msg['From'] = FROM_EMAIL
+    msg['To'] = to_email
+    msg.set_content(body)
+    msg.add_attachment(pdf_bytes, maintype='application', subtype='pdf', filename='factuur.pdf')
+
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+        smtp.login(FROM_EMAIL, FROM_PASSWORD)
+        smtp.send_message(msg)
 
 @app.route('/', methods=['GET'])
 def index():
@@ -454,6 +492,13 @@ def generate_pdf():
                                               lang=lang)
 
         pdf_file = HTML(string=html_invoice).write_pdf(stylesheets=[CSS(string=PDF_CSS)])
+
+        email = request.form.get('email')
+        send_email_flag = request.form.get('send_email')
+
+        if send_email_flag and email:
+            send_email(email, pdf_file, subject=f"Factuur {factuurnummer}", body="Hierbij ontvangt u de factuur in de bijlage.")
+            return f"Factuur is verstuurd naar {email}!"
 
         pdf_id = str(uuid.uuid4())
         pdf_storage[pdf_id] = pdf_file
@@ -657,6 +702,12 @@ INDEX_HTML = '''
 
       <div id="diensten"></div>
       <button type="button" onclick="voegDienstToe()">{{ t.add_service }}</button>
+
+      <label style="margin-top:20px;">
+        <input type="checkbox" name="send_email" /> {{ t.send_email_label }}
+      </label>
+      <label>{{ t.email_label }}:</label>
+      <input type="email" name="email" placeholder="voorbeeld@domein.nl" />
 
       <h2>{{ t.signature_label }}</h2>
       <canvas id="signature-pad"></canvas>
