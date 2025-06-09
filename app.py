@@ -470,7 +470,7 @@ def serve_pdf(pdf_id):
     lang = request.args.get('lang', 'nl')
     return send_file(io.BytesIO(pdf_data),
                      mimetype='application/pdf',
-                     as_attachment=False,
+                     as_attachment=True,
                      download_name='factuur.pdf')
 
 INDEX_HTML = '''
@@ -482,11 +482,10 @@ INDEX_HTML = '''
 <title>{{ t.title }}</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap&subset=arabic" rel="stylesheet" />
 <style>
-  /* Luxe achtergrond met subtiele glans en textuur */
   body {
-    background: linear-gradient(135deg, #1c1c1c 0%, #3a3a3a 100%);
+    background: linear-gradient(135deg, #d0f0ea 0%, #e8f6f3 100%);
     font-family: 'Poppins', sans-serif;
-    color: #eee;
+    color: #2e4a45;
     margin: 0; padding: 20px;
     min-height: 100vh;
     display: flex; align-items: center; justify-content: center;
@@ -499,21 +498,18 @@ INDEX_HTML = '''
 
   .container {
     width: 100%; max-width: 900px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.85);
     padding: 40px 50px;
     border-radius: 25px;
     box-shadow:
-      0 4px 30px rgba(0, 0, 0, 0.6),
-      inset 0 0 60px rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+      0 4px 30px rgba(0, 0, 0, 0.1),
+      inset 0 0 40px rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(46, 74, 69, 0.3);
   }
 
   h1 {
     text-align: center;
-    color: #FFD700; /* goudkleur */
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+    color: #3a7d7d;
     margin-bottom: 40px;
     font-weight: 700;
     letter-spacing: 2px;
@@ -530,14 +526,15 @@ INDEX_HTML = '''
     padding: 20px;
     border-radius: 12px;
     margin-bottom: 20px;
-    background-color: rgba(255,255,255,0.1);
-    box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.15);
+    background-color: #dff4f2;
+    border: 1px solid #a9d5d1;
+    box-shadow: none;
   }
   .bedrijf {
-    background-color: rgba(255, 215, 0, 0.1);
+    background-color: #dff4f2;
   }
   .klant {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: #dff4f2;
   }
 
   label {
@@ -545,63 +542,61 @@ INDEX_HTML = '''
     margin-top: 10px;
     font-weight: 600;
     font-size: 14px;
-    color: #eee;
+    color: #2e4a45;
   }
 
   input, select {
     width: 100%;
     padding: 14px 18px;
     margin-top: 6px;
-    border-radius: 15px;
-    border: none;
-    background: rgba(255, 255, 255, 0.15);
-    color: #fff;
+    border-radius: 10px;
+    border: 1.5px solid #a9d5d1;
+    background: #f0fbfa;
+    color: #2e4a45;
     font-size: 16px;
     box-sizing: border-box;
     transition: all 0.3s ease;
-    box-shadow: inset 0 0 6px rgba(255, 215, 0, 0.4);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    box-shadow: inset 0 0 8px rgba(169, 213, 209, 0.6);
   }
 
   input::placeholder {
-    color: #ddd;
+    color: #a9d5d1;
     opacity: 0.8;
   }
 
-  /* Focus: input duidelijk en tekst zichtbaar */
   input:focus, select:focus {
     outline: none;
-    background: rgba(255, 255, 255, 0.3);
-    color: #000;
-    box-shadow: 0 0 12px #FFD700;
+    border-color: #3a7d7d;
+    box-shadow: 0 0 8px #3a7d7d;
+    background: #e0f7f6;
+    color: #1e3d3c;
     filter: none !important;
     text-indent: 0 !important;
   }
 
-  /* Blur: input wazig + tekst onzichtbaar */
-  input.blurred, select.blurred {
-    filter: blur(4px);
-    color: transparent !important;
-    text-indent: 9999px;
+  /* Blur alleen op klant inputs/selects */
+  .klant input.blurred, .klant select.blurred {
+    filter: blur(1.5px);
+    color: #2e4a45;
+    text-indent: 0;
     user-select: none;
   }
 
   .dienst-block {
-    border: 1px solid rgba(255, 215, 0, 0.3);
+    border: 1px solid #a9d5d1;
     padding: 15px;
     border-radius: 12px;
     margin-top: 15px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: #dff4f2;
     position: relative;
-    box-shadow: 0 2px 6px rgba(255, 215, 0, 0.1);
+    box-shadow: none;
   }
 
   .remove-btn {
     position: absolute;
     top: 10px;
     right: 10px;
-    background-color: #b22222;
+    background-color: #3a7d7d;
     color: white;
     border: none;
     border-radius: 50%;
@@ -617,17 +612,17 @@ INDEX_HTML = '''
   button {
     padding: 15px;
     border: none;
-    border-radius: 30px;
-    background-color: #FFD700;
-    color: #333;
+    border-radius: 25px;
+    background-color: #3a7d7d;
+    color: white;
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 600;
     cursor: pointer;
     transition: background 0.3s;
   }
 
   button:hover {
-    background-color: #bfa200;
+    background-color: #2a5e5e;
   }
 
   .button-group {
@@ -638,12 +633,12 @@ INDEX_HTML = '''
   }
 
   canvas {
-    border: 2px solid rgba(255, 215, 0, 0.6);
+    border: 2px solid #3a7d7d;
     border-radius: 8px;
     margin-top: 10px;
     width: 100%;
     height: 200px;
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: #e0f7f6;
   }
 
   .form-grid {
@@ -836,11 +831,9 @@ INDEX_HTML = '''
       saveSignature();
     });
 
-    // Function to add blur effect event listeners on inputs/selects inside a given root element
     function applyBlurEffectToInputs(root) {
-      const inputs = root.querySelectorAll('input, select');
-      inputs.forEach(input => {
-        // Avoid adding duplicate listeners
+      const klantInputs = root.querySelectorAll('.klant input, .klant select');
+      klantInputs.forEach(input => {
         if (!input._blurListenersAdded) {
           input.addEventListener('blur', () => {
             if(input.value.trim() !== '') {
@@ -850,7 +843,6 @@ INDEX_HTML = '''
           input.addEventListener('focus', () => {
             input.classList.remove('blurred');
           });
-          // On page load: no blur if empty
           if(input.value.trim() !== '') {
             input.classList.add('blurred');
           }
