@@ -6,16 +6,9 @@ import uuid
 from datetime import datetime
 from flask import Flask, request, render_template_string, send_file, redirect, url_for, abort
 from weasyprint import HTML, CSS
-import requests
 
 app = Flask(__name__)
 pdf_storage = {}
-
-# --- Vul hier je Mailgun gegevens in ---
-MAILGUN_API_KEY = "pubkey-e68319e4f97a3fc0d4a8220470c2c244"
-MAILGUN_DOMAIN = "sandbox47c183b04a5747729ab799b6cd6fe40f.mailgun.org"  # Bijvoorbeeld: sandbox1234.mailgun.org
-FROM_EMAIL = f"postmaster@sandbox47c183b04a5747729ab799b6cd6fe40f.mailgun.org"
-# ----------------------------------------
 
 translations = {
     'nl': {
@@ -54,8 +47,6 @@ translations = {
         'client_name': 'Klantnaam',
         'language': 'Taal',
         'company_name': 'Bedrijfsnaam',
-        'send_email_label': 'Factuur per e-mail versturen',
-        'email_label': 'E-mailadres ontvanger (optioneel)'
     },
     'en': {
         'title': 'Quick Invoice',
@@ -93,8 +84,6 @@ translations = {
         'client_name': 'Client Name',
         'language': 'Language',
         'company_name': 'Company Name',
-        'send_email_label': 'Send invoice by email',
-        'email_label': 'Recipient email (optional)'
     },
     'ar': {
         'title': 'فاتورة سريعة',
@@ -132,8 +121,265 @@ translations = {
         'client_name': 'اسم العميل',
         'language': 'اللغة',
         'company_name': 'اسم الشركة',
-        'send_email_label': 'إرسال الفاتورة عبر البريد الإلكتروني',
-        'email_label': 'البريد الإلكتروني للمستلم (اختياري)'
+    },
+    'de': {
+        'title': 'Schnellrechnung',
+        'invoice_number': 'Rechnungsnummer',
+        'date': 'Datum',
+        'invoice_to': 'Rechnung an:',
+        'description': 'Beschreibung',
+        'quantity': 'Menge',
+        'price': 'Preis',
+        'vat_percent': 'MwSt%',
+        'amount': 'Betrag',
+        'subtotal': 'Zwischensumme (exkl. MwSt):',
+        'total_vat': 'Gesamt MwSt:',
+        'total': 'Gesamt (inkl. MwSt):',
+        'greeting': 'Mit freundlichen Grüßen,',
+        'signature': 'Unterschrift:',
+        'company_info': 'Firmendaten',
+        'client_info': 'Kundendaten',
+        'service': 'Dienstleistung',
+        'price_per_unit': 'Preis pro Einheit',
+        'add_service': 'Dienst hinzufügen',
+        'signature_label': 'Unterschrift',
+        'clear_signature': 'Unterschrift löschen',
+        'download_invoice': 'Rechnung öffnen',
+        'save_company': 'Firmendaten speichern',
+        'clear_company': 'Firmendaten löschen',
+        'upload_logo': 'Logo hochladen (optional)',
+        'street': 'Straße und Hausnummer',
+        'postcode': 'Postleitzahl',
+        'city': 'Stadt',
+        'country': 'Land',
+        'kvk': 'Handelsregisternummer',
+        'vat': 'USt-IdNr.',
+        'iban': 'IBAN',
+        'client_name': 'Kundenname',
+        'language': 'Sprache',
+        'company_name': 'Firmenname',
+    },
+    'fr': {
+        'title': 'Facture rapide',
+        'invoice_number': 'Numéro de facture',
+        'date': 'Date',
+        'invoice_to': 'Facture à :',
+        'description': 'Description',
+        'quantity': 'Quantité',
+        'price': 'Prix',
+        'vat_percent': 'TVA%',
+        'amount': 'Montant',
+        'subtotal': 'Sous-total (HT):',
+        'total_vat': 'Total TVA:',
+        'total': 'Total (TTC):',
+        'greeting': 'Cordialement,',
+        'signature': 'Signature :',
+        'company_info': 'Informations sur l\'entreprise',
+        'client_info': 'Informations sur le client',
+        'service': 'Service',
+        'price_per_unit': 'Prix unitaire',
+        'add_service': 'Ajouter un service',
+        'signature_label': 'Signature',
+        'clear_signature': 'Effacer la signature',
+        'download_invoice': 'Ouvrir la facture',
+        'save_company': 'Enregistrer les informations de l\'entreprise',
+        'clear_company': 'Effacer les informations de l\'entreprise',
+        'upload_logo': 'Télécharger votre logo (optionnel)',
+        'street': 'Rue et numéro',
+        'postcode': 'Code postal',
+        'city': 'Ville',
+        'country': 'Pays',
+        'kvk': 'Numéro de registre du commerce',
+        'vat': 'Numéro de TVA',
+        'iban': 'IBAN',
+        'client_name': 'Nom du client',
+        'language': 'Langue',
+        'company_name': 'Nom de l\'entreprise',
+    },
+    'es': {
+        'title': 'Factura rápida',
+        'invoice_number': 'Número de factura',
+        'date': 'Fecha',
+        'invoice_to': 'Factura para:',
+        'description': 'Descripción',
+        'quantity': 'Cantidad',
+        'price': 'Precio',
+        'vat_percent': 'IVA%',
+        'amount': 'Importe',
+        'subtotal': 'Subtotal (sin IVA):',
+        'total_vat': 'Total IVA:',
+        'total': 'Total (con IVA):',
+        'greeting': 'Saludos cordiales,',
+        'signature': 'Firma:',
+        'company_info': 'Datos de la empresa',
+        'client_info': 'Datos del cliente',
+        'service': 'Servicio',
+        'price_per_unit': 'Precio por unidad',
+        'add_service': 'Agregar servicio',
+        'signature_label': 'Firma',
+        'clear_signature': 'Borrar firma',
+        'download_invoice': 'Abrir factura',
+        'save_company': 'Guardar datos de la empresa',
+        'clear_company': 'Borrar datos de la empresa',
+        'upload_logo': 'Subir logo (opcional)',
+        'street': 'Calle y número',
+        'postcode': 'Código postal',
+        'city': 'Ciudad',
+        'country': 'País',
+        'kvk': 'Número de registro mercantil',
+        'vat': 'Número de IVA',
+        'iban': 'IBAN',
+        'client_name': 'Nombre del cliente',
+        'language': 'Idioma',
+        'company_name': 'Nombre de la empresa',
+    },
+    'pt': {
+        'title': 'Fatura rápida',
+        'invoice_number': 'Número da fatura',
+        'date': 'Data',
+        'invoice_to': 'Fatura para:',
+        'description': 'Descrição',
+        'quantity': 'Quantidade',
+        'price': 'Preço',
+        'vat_percent': 'IVA%',
+        'amount': 'Valor',
+        'subtotal': 'Subtotal (sem IVA):',
+        'total_vat': 'Total IVA:',
+        'total': 'Total (com IVA):',
+        'greeting': 'Atenciosamente,',
+        'signature': 'Assinatura:',
+        'company_info': 'Informações da empresa',
+        'client_info': 'Informações do cliente',
+        'service': 'Serviço',
+        'price_per_unit': 'Preço por unidade',
+        'add_service': 'Adicionar serviço',
+        'signature_label': 'Assinatura',
+        'clear_signature': 'Limpar assinatura',
+        'download_invoice': 'Abrir fatura',
+        'save_company': 'Salvar informações da empresa',
+        'clear_company': 'Limpar informações da empresa',
+        'upload_logo': 'Carregar logo (opcional)',
+        'street': 'Rua e número',
+        'postcode': 'Código postal',
+        'city': 'Cidade',
+        'country': 'País',
+        'kvk': 'Número de registro comercial',
+        'vat': 'Número de IVA',
+        'iban': 'IBAN',
+        'client_name': 'Nome do cliente',
+        'language': 'Idioma',
+        'company_name': 'Nome da empresa',
+    },
+    'sv': {
+        'title': 'Snabbfaktura',
+        'invoice_number': 'Fakturanummer',
+        'date': 'Datum',
+        'invoice_to': 'Faktura till:',
+        'description': 'Beskrivning',
+        'quantity': 'Antal',
+        'price': 'Pris',
+        'vat_percent': 'Moms%',
+        'amount': 'Belopp',
+        'subtotal': 'Delsumma (exkl. moms):',
+        'total_vat': 'Total moms:',
+        'total': 'Totalt (inkl. moms):',
+        'greeting': 'Med vänliga hälsningar,',
+        'signature': 'Signatur:',
+        'company_info': 'Företagsuppgifter',
+        'client_info': 'Kunduppgifter',
+        'service': 'Tjänst',
+        'price_per_unit': 'Pris per enhet',
+        'add_service': 'Lägg till tjänst',
+        'signature_label': 'Signatur',
+        'clear_signature': 'Rensa signatur',
+        'download_invoice': 'Öppna faktura',
+        'save_company': 'Spara företagsuppgifter',
+        'clear_company': 'Rensa företagsuppgifter',
+        'upload_logo': 'Ladda upp din logotyp (valfritt)',
+        'street': 'Gata och nummer',
+        'postcode': 'Postnummer',
+        'city': 'Stad',
+        'country': 'Land',
+        'kvk': 'Organisationsnummer',
+        'vat': 'Momsnummer',
+        'iban': 'IBAN',
+        'client_name': 'Kundnamn',
+        'language': 'Språk',
+        'company_name': 'Företagsnamn',
+    },
+    'tr': {
+        'title': 'Hızlı Fatura',
+        'invoice_number': 'Fatura Numarası',
+        'date': 'Tarih',
+        'invoice_to': 'Fatura Alıcısı:',
+        'description': 'Açıklama',
+        'quantity': 'Miktar',
+        'price': 'Fiyat',
+        'vat_percent': 'KDV%',
+        'amount': 'Tutar',
+        'subtotal': 'Ara Toplam (KDV Hariç):',
+        'total_vat': 'Toplam KDV:',
+        'total': 'Toplam (KDV Dahil):',
+        'greeting': 'Saygılarımla,',
+        'signature': 'İmza:',
+        'company_info': 'Şirket Bilgileri',
+        'client_info': 'Müşteri Bilgileri',
+        'service': 'Hizmet',
+        'price_per_unit': 'Birim Fiyat',
+        'add_service': 'Hizmet Ekle',
+        'signature_label': 'İmza',
+        'clear_signature': 'İmza Temizle',
+        'download_invoice': 'Faturayı Aç',
+        'save_company': 'Şirket Bilgilerini Kaydet',
+        'clear_company': 'Şirket Bilgilerini Temizle',
+        'upload_logo': 'Logonuzu Yükleyin (isteğe bağlı)',
+        'street': 'Sokak ve Numara',
+        'postcode': 'Posta Kodu',
+        'city': 'Şehir',
+        'country': 'Ülke',
+        'kvk': 'Ticaret Sicil Numarası',
+        'vat': 'KDV Numarası',
+        'iban': 'IBAN',
+        'client_name': 'Müşteri Adı',
+        'language': 'Dil',
+        'company_name': 'Şirket Adı',
+    },
+    'it': {
+        'title': 'Fattura veloce',
+        'invoice_number': 'Numero fattura',
+        'date': 'Data',
+        'invoice_to': 'Fattura a:',
+        'description': 'Descrizione',
+        'quantity': 'Quantità',
+        'price': 'Prezzo',
+        'vat_percent': 'IVA%',
+        'amount': 'Importo',
+        'subtotal': 'Totale parziale (escl. IVA):',
+        'total_vat': 'Totale IVA:',
+        'total': 'Totale (incl. IVA):',
+        'greeting': 'Cordiali saluti,',
+        'signature': 'Firma:',
+        'company_info': 'Informazioni sull\'azienda',
+        'client_info': 'Informazioni cliente',
+        'service': 'Servizio',
+        'price_per_unit': 'Prezzo per unità',
+        'add_service': 'Aggiungi servizio',
+        'signature_label': 'Firma',
+        'clear_signature': 'Cancella firma',
+        'download_invoice': 'Apri fattura',
+        'save_company': 'Salva informazioni azienda',
+        'clear_company': 'Cancella informazioni azienda',
+        'upload_logo': 'Carica logo (opzionale)',
+        'street': 'Via e numero',
+        'postcode': 'CAP',
+        'city': 'Città',
+        'country': 'Paese',
+        'kvk': 'Numero di registrazione',
+        'vat': 'Partita IVA',
+        'iban': 'IBAN',
+        'client_name': 'Nome cliente',
+        'language': 'Lingua',
+        'company_name': 'Nome azienda',
     }
 }
 
@@ -142,25 +388,6 @@ def get_translation():
     if lang not in translations:
         lang = 'nl'
     return translations[lang], lang
-
-def send_email(to_email, pdf_bytes, subject="Factuur", body="Hier is uw factuur."):
-    files = {
-        "attachment": ("factuur.pdf", pdf_bytes, "application/pdf")
-    }
-    data = {
-        "from": FROM_EMAIL,
-        "to": to_email,
-        "subject": subject,
-        "text": body
-    }
-    response = requests.post(
-        f"https://api.mailgun.net/v3/{MAILGUN_DOMAIN}/messages",
-        auth=("api", MAILGUN_API_KEY),
-        data=data,
-        files=files
-    )
-    if response.status_code != 200:
-        raise Exception(f"Mailgun error: {response.status_code} {response.text}")
 
 @app.route('/', methods=['GET'])
 def index():
@@ -227,13 +454,6 @@ def generate_pdf():
                                               lang=lang)
 
         pdf_file = HTML(string=html_invoice).write_pdf(stylesheets=[CSS(string=PDF_CSS)])
-
-        email = request.form.get('email')
-        send_email_flag = request.form.get('send_email')
-
-        if send_email_flag and email:
-            send_email(email, pdf_file, subject=f"Factuur {factuurnummer}", body="Hierbij ontvangt u de factuur in de bijlage.")
-            return f"Factuur is verstuurd naar {email}!"
 
         pdf_id = str(uuid.uuid4())
         pdf_storage[pdf_id] = pdf_file
@@ -437,12 +657,6 @@ INDEX_HTML = '''
 
       <div id="diensten"></div>
       <button type="button" onclick="voegDienstToe()">{{ t.add_service }}</button>
-
-      <label style="margin-top:20px;">
-        <input type="checkbox" name="send_email" /> {{ t.send_email_label }}
-      </label>
-      <label>{{ t.email_label }}:</label>
-      <input type="email" name="email" placeholder="voorbeeld@domein.nl" />
 
       <h2>{{ t.signature_label }}</h2>
       <canvas id="signature-pad"></canvas>
