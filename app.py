@@ -10,6 +10,10 @@ from weasyprint import HTML, CSS
 app = Flask(__name__)
 pdf_storage = {}
 
+@app.template_filter('decimalcomma')
+def decimal_comma_filter(value):
+    return str(value).replace('.', ',')
+
 translations = {
     'nl': {
         'title': 'Snelfactuurtje',
@@ -588,8 +592,8 @@ INDEX_HTML = '''
 
   /* Blur alleen op klant inputs/selects */
   .klant input.blurred, .klant select.blurred {
-    filter: blur(2px);
-    opacity: 0.75;
+    filter: blur(3px);
+    opacity: 0.7;
     color: #264653;
     user-select: none;
     cursor: default;
@@ -924,11 +928,6 @@ PDF_HTML = '''
   td.right, th.right {
     text-align: right;
   }
-  tfoot td {
-    border: none;
-    padding-top: 10px;
-    font-weight: bold;
-  }
   .totals-table {
     width: 300px;
     float: right;
@@ -996,9 +995,9 @@ PDF_HTML = '''
         <tr>
           <td>{{ i }}</td>
           <td>{{ dienst }}</td>
-          <td class="right">€ {{ '%.2f'|format(prijs).replace('.', ',') }}</td>
+          <td class="right">€ {{ '%.2f'|format(prijs)|decimalcomma }}</td>
           <td class="right">{{ aantal }}</td>
-          <td class="right">€ {{ '%.2f'|format(incl).replace('.', ',') }}</td>
+          <td class="right">€ {{ '%.2f'|format(incl)|decimalcomma }}</td>
           <td class="right">{{ btw_pct }}%</td>
         </tr>
       {% endfor %}
@@ -1008,17 +1007,29 @@ PDF_HTML = '''
   <table class="totals-table">
     <tr>
       <td>Subtotaal (excl. BTW):</td>
-      <td class="right">€ {{ '%.2f'|format(subtotal).replace('.', ',') }}</td>
+      <td class="right">€ {{ '%.2f'|format(subtotal)|decimalcomma }}</td>
     </tr>
     <tr>
       <td>BTW:</td>
-      <td class="right">€ {{ '%.2f'|format(total_vat).replace('.', ',') }}</td>
+      <td class="right">€ {{ '%.2f'|format(total_vat)|decimalcomma }}</td>
     </tr>
     <tr class="total-row">
       <td>Totaal (incl. BTW):</td>
-      <td class="right">€ {{ '%.2f'|format(total).replace('.', ',') }}</td>
+      <td class="right">€ {{ '%.2f'|format(total)|decimalcomma }}</td>
     </tr>
   </table>
+
+  {% if handtekening_data %}
+  <div style="margin-top: 60px;">
+    <strong>{{ t.signature }}</strong><br />
+    <img src="{{ handtekening_data }}" alt="Handtekening" style="max-width: 200px;"/>
+  </div>
+  {% endif %}
+
+  <div style="margin-top: 80px; font-size: 10pt; text-align: center; color: #555;">
+    {{ t.greeting }}<br/>
+    {{ bedrijfsnaam }}
+  </div>
 
 </body>
 </html>
