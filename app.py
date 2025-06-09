@@ -8,7 +8,7 @@ from flask import Flask, request, render_template_string, send_file, redirect, u
 from weasyprint import HTML, CSS
 
 app = Flask(__name__)
-app.jinja_env.globals.update(enumerate=enumerate)  # <--- Hier toegevoegd
+app.jinja_env.globals.update(enumerate=enumerate)  # Zorg dat 'enumerate' in templates werkt
 
 pdf_storage = {}
 
@@ -399,21 +399,51 @@ translations = {
     }
 }
 
+currency_map = {
+    'nl': 'EUR',
+    'en': 'EUR',
+    'ar': 'AED',
+    'de': 'EUR',
+    'fr': 'EUR',
+    'es': 'EUR',
+    'pt': 'EUR',
+    'sv': 'SEK',
+    'tr': 'TRY',
+    'it': 'EUR',
+}
+
+currency_options = ['EUR', 'AED', 'SEK', 'TRY']
+
+currency_names = {
+    'EUR': 'Euro (€)',
+    'AED': 'Dirham (د.إ)',
+    'SEK': 'Zweedse kroon (kr)',
+    'TRY': 'Turkse lira (₺)',
+}
+
+currency_symbols = {
+    'EUR': '€',
+    'AED': 'د.إ',
+    'SEK': 'kr',
+    'TRY': '₺',
+}
+
 def get_translation():
     lang = request.args.get('lang', 'nl').lower()
     if lang not in translations:
         lang = 'nl'
-    return translations[lang], lang
+    currency = currency_map.get(lang, 'EUR')
+    return translations[lang], lang, currency
 
 @app.route('/', methods=['GET'])
 def index():
-    t, lang = get_translation()
-    return render_template_string(INDEX_HTML, t=t, lang=lang, translations=translations)
+    t, lang, currency = get_translation()
+    return render_template_string(INDEX_HTML, t=t, lang=lang, translations=translations, currency=currency, currency_options=currency_options, currency_names=currency_names)
 
 @app.route('/generate', methods=['POST'])
 def generate_pdf():
     try:
-        t, lang = get_translation()
+        t, lang, default_currency = get_translation()
 
         factuurnummer = request.form['factuurnummer']
         bedrijfsnaam = request.form['bedrijfsnaam']
@@ -430,6 +460,8 @@ def generate_pdf():
         klant_postcode = request.form['klant_postcode']
         klant_plaats = request.form['klant_plaats']
         klant_land = request.form['klant_land']
+
+        valuta = request.form.get('valuta', default_currency)
 
         diensten = []
         index = 0
@@ -479,6 +511,8 @@ def generate_pdf():
                                               total=total,
                                               logo_data=logo_data,
                                               handtekening_data=handtekening_data,
+                                              valuta=valuta,
+                                              valuta_symbool=currency_symbols.get(valuta, valuta),
                                               lang=lang)
 
         pdf_file = HTML(string=html_invoice).write_pdf(stylesheets=[CSS(string=PDF_CSS)])
@@ -753,6 +787,13 @@ INDEX_HTML = '''
         </div>
       </div>
 
+      <label>Valuta:</label>
+      <select name="valuta" required>
+        {% for code in currency_options %}
+          <option value="{{ code }}" {% if code == currency %}selected{% endif %}>{{ currency_names[code] }}</option>
+        {% endfor %}
+      </select>
+
       <div id="diensten"></div>
       <button type="button" onclick="voegDienstToe()">{{ t.add_service }}</button>
 
@@ -792,7 +833,6 @@ INDEX_HTML = '''
     dienstIndex++;
     applyBlurEffectToInputs(div);
 
-    // Fix remove button position for RTL
     if(document.documentElement.dir === "rtl") {
       div.querySelector('.remove-btn').style.left = "10px";
       div.querySelector('.remove-btn').style.right = "auto";
@@ -1024,9 +1064,9 @@ PDF_HTML = '''
         <tr>
           <td>{{ i }}</td>
           <td>{{ dienst }}</td>
-          <td class="right">€ {{ ('%.2f'|format(prijs))|replace('.', ',') }}</td>
+          <td class="right">{{ valuta_symbool }} {{ ('%.2f'|format(prijs))|replace('.', ',') }}</td>
           <td class="right">{{ aantal }}</td>
-          <td class="right">€ {{ ('%.2f'|format(incl))|replace('.', ',') }}</td>
+          <td class="right">{{ valuta_symbool }} {{ ('%.2f'|format(incl))|replace('.', ',') }}</td>
           <td class="right">{{ btw_pct }}%</td>
         </tr>
       {% endfor %}
@@ -1036,15 +1076,15 @@ PDF_HTML = '''
   <table class="totals-table">
     <tr>
       <td>{{ t.subtotal }}</td>
-      <td class="right">€ {{ ('%.2f'|format(subtotal))|replace('.', ',') }}</td>
+      <td class="right">{{ valuta_symbool }} {{ ('%.2f'|format(subtotal))|replace('.', ',') }}</td>
     </tr>
     <tr>
       <td>{{ t.total_vat }}</td>
-      <td class="right">€ {{ ('%.2f'|format(total_vat))|replace('.', ',') }}</td>
+      <td class="right">{{ valuta_symbool }} {{ ('%.2f'|format(total_vat))|replace('.', ',') }}</td>
     </tr>
     <tr class="total-row">
       <td>{{ t.total }}</td>
-      <td class="right">€ {{ ('%.2f'|format(total))|replace('.', ',') }}</td>
+      <td class="right">{{ valuta_symbool }} {{ ('%.2f'|format(total))|replace('.', ',') }}</td>
     </tr>
   </table>
 
