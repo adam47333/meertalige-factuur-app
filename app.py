@@ -51,6 +51,7 @@ translations = {
         'client_name': 'Klantnaam',
         'language': 'Taal',
         'company_name': 'Bedrijfsnaam',
+        'language_name': 'Nederlands',
     },
     'en': {
         'title': 'Quick Invoice',
@@ -88,6 +89,7 @@ translations = {
         'client_name': 'Client Name',
         'language': 'Language',
         'company_name': 'Company Name',
+        'language_name': 'English',
     },
     'ar': {
         'title': 'فاتورة سريعة',
@@ -125,6 +127,7 @@ translations = {
         'client_name': 'اسم العميل',
         'language': 'اللغة',
         'company_name': 'اسم الشركة',
+        'language_name': 'العربية',
     },
     'de': {
         'title': 'Schnellrechnung',
@@ -162,6 +165,7 @@ translations = {
         'client_name': 'Kundenname',
         'language': 'Sprache',
         'company_name': 'Firmenname',
+        'language_name': 'Deutsch',
     },
     'fr': {
         'title': 'Facture rapide',
@@ -199,6 +203,7 @@ translations = {
         'client_name': 'Nom du client',
         'language': 'Langue',
         'company_name': 'Nom de l\'entreprise',
+        'language_name': 'Français',
     },
     'es': {
         'title': 'Factura rápida',
@@ -236,6 +241,7 @@ translations = {
         'client_name': 'Nombre del cliente',
         'language': 'Idioma',
         'company_name': 'Nombre de la empresa',
+        'language_name': 'Español',
     },
     'pt': {
         'title': 'Fatura rápida',
@@ -273,6 +279,7 @@ translations = {
         'client_name': 'Nome do cliente',
         'language': 'Idioma',
         'company_name': 'Nome da empresa',
+        'language_name': 'Português',
     },
     'sv': {
         'title': 'Snabbfaktura',
@@ -310,6 +317,7 @@ translations = {
         'client_name': 'Kundnamn',
         'language': 'Språk',
         'company_name': 'Företagsnamn',
+        'language_name': 'Svenska',
     },
     'tr': {
         'title': 'Hızlı Fatura',
@@ -347,6 +355,7 @@ translations = {
         'client_name': 'Müşteri Adı',
         'language': 'Dil',
         'company_name': 'Şirket Adı',
+        'language_name': 'Türkçe',
     },
     'it': {
         'title': 'Fattura veloce',
@@ -384,6 +393,7 @@ translations = {
         'client_name': 'Nome cliente',
         'language': 'Lingua',
         'company_name': 'Nome azienda',
+        'language_name': 'Italiano',
     }
 }
 
@@ -687,8 +697,8 @@ INDEX_HTML = '''
     <form id="languageForm" class="language-select" method="GET" action="/">
       <label for="langSelect">{{ t.language }}:</label>
       <select id="langSelect" name="lang" onchange="document.getElementById('languageForm').submit()">
-        {% for key in translations.keys() %}
-          <option value="{{key}}" {% if lang == key %}selected{% endif %}>{{ translations[key]['language'] if 'language' in translations[key] else key }}</option>
+        {% for key, val in translations.items() %}
+          <option value="{{key}}" {% if lang == key %}selected{% endif %}>{{ val.language_name }}</option>
         {% endfor %}
       </select>
     </form>
@@ -753,6 +763,7 @@ INDEX_HTML = '''
     </form>
   </div>
 
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 <script>
   let dienstIndex = 0;
   function voegDienstToe() {
@@ -865,7 +876,6 @@ INDEX_HTML = '''
     });
   }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 </body>
 </html>
 '''
