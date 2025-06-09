@@ -10,10 +10,6 @@ from weasyprint import HTML, CSS
 app = Flask(__name__)
 pdf_storage = {}
 
-@app.template_filter('decimalcomma')
-def decimal_comma_filter(value):
-    return str(value).replace('.', ',')
-
 translations = {
     'nl': {
         'title': 'Snelfactuurtje',
@@ -477,7 +473,11 @@ def generate_pdf():
                                               total=total,
                                               logo_data=logo_data,
                                               handtekening_data=handtekening_data,
-                                              lang=lang)
+                                              lang=lang,
+                                              enumerate=enumerate,
+                                              datetime=datetime,
+                                              timedelta=timedelta,
+                                              now=datetime.today().strftime('%d-%m-%Y'))
 
         pdf_file = HTML(string=html_invoice).write_pdf(stylesheets=[CSS(string=PDF_CSS)])
 
@@ -1022,9 +1022,9 @@ PDF_HTML = '''
         <tr>
           <td>{{ i }}</td>
           <td>{{ dienst }}</td>
-          <td class="right">€ {{ ('%.2f'|format(prijs))|replace('.', ',') }}</td>
+          <td class="right">€ {{ '%.2f'|format(prijs).replace('.', ',') }}</td>
           <td class="right">{{ aantal }}</td>
-          <td class="right">€ {{ ('%.2f'|format(incl))|replace('.', ',') }}</td>
+          <td class="right">€ {{ '%.2f'|format(incl).replace('.', ',') }}</td>
           <td class="right">{{ btw_pct }}%</td>
         </tr>
       {% endfor %}
@@ -1034,24 +1034,25 @@ PDF_HTML = '''
   <table class="totals-table">
     <tr>
       <td>{{ t.subtotal }}</td>
-      <td class="right">€ {{ ('%.2f'|format(subtotal))|replace('.', ',') }}</td>
+      <td class="right">€ {{ '%.2f'|format(subtotal).replace('.', ',') }}</td>
     </tr>
     <tr>
-      <td>{{ t.total_vat }}</td>
-      <td class="right">€ {{ ('%.2f'|format(total_vat))|replace('.', ',') }}</td>
+      <td>BTW:</td>
+      <td class="right">€ {{ '%.2f'|format(total_vat).replace('.', ',') }}</td>
     </tr>
     <tr class="total-row">
       <td>{{ t.total }}</td>
-      <td class="right">€ {{ ('%.2f'|format(total))|replace('.', ',') }}</td>
+      <td class="right">€ {{ '%.2f'|format(total).replace('.', ',') }}</td>
     </tr>
   </table>
 
   {% if handtekening_data %}
-  <div style="margin-top: 50px;">
+  <div style="margin-top: 40px;">
     <strong>{{ t.signature }}</strong><br />
-    <img src="{{ handtekening_data }}" alt="Signature" style="max-width: 300px; border: 1px solid #000;"/>
+    <img src="{{ handtekening_data }}" alt="Handtekening" style="max-width: 300px; border: 1px solid #000;"/>
   </div>
   {% endif %}
+
 </body>
 </html>
 '''
@@ -1063,14 +1064,6 @@ body {
   font-size: 12pt;
 }
 '''
-
-@app.context_processor
-def inject_now():
-    return {
-        'now': datetime.today().strftime('%d-%m-%Y'),
-        'datetime': datetime,
-        'timedelta': timedelta,
-    }
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
