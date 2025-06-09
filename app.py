@@ -4,11 +4,10 @@ import io
 import base64
 import uuid
 from datetime import datetime
-from flask import Flask, request, send_file, render_template_string, abort, redirect, url_for
-from fpdf import FPDF
+from flask import Flask, request, render_template_string, send_file, redirect, url_for, abort
+from weasyprint import HTML, CSS
 
 app = Flask(__name__)
-
 pdf_storage = {}
 
 translations = {
@@ -49,265 +48,6 @@ translations = {
         'language': 'Taal',
         'company_name': 'Bedrijfsnaam',
     },
-    'de': {
-        'title': 'Schnellrechnung',
-        'invoice_number': 'Rechnungsnummer',
-        'date': 'Datum',
-        'invoice_to': 'Rechnung an:',
-        'description': 'Beschreibung',
-        'quantity': 'Anzahl',
-        'price': 'Preis',
-        'vat_percent': 'MwSt%',
-        'amount': 'Betrag',
-        'subtotal': 'Zwischensumme (ohne MwSt):',
-        'total_vat': 'Gesamt MwSt:',
-        'total': 'Gesamtsumme (inkl. MwSt):',
-        'greeting': 'Mit freundlichen Grüßen,',
-        'signature': 'Unterschrift:',
-        'company_info': 'Firmendaten',
-        'client_info': 'Kundendaten',
-        'service': 'Dienstleistung',
-        'price_per_unit': 'Preis pro Stück',
-        'add_service': 'Dienst hinzufügen',
-        'signature_label': 'Unterschrift',
-        'clear_signature': 'Unterschrift löschen',
-        'download_invoice': 'Rechnung öffnen',
-        'save_company': 'Firmendaten speichern',
-        'clear_company': 'Firmendaten löschen',
-        'upload_logo': 'Ihr Logo hochladen (optional)',
-        'street': 'Straße und Hausnummer',
-        'postcode': 'Postleitzahl',
-        'city': 'Stadt',
-        'country': 'Land',
-        'kvk': 'Handelsregisternummer',
-        'vat': 'USt-IdNr.',
-        'iban': 'IBAN',
-        'client_name': 'Kundenname',
-        'language': 'Sprache',
-        'company_name': 'Firmenname',
-    },
-    'fr': {
-        'title': 'Facture rapide',
-        'invoice_number': 'Numéro de facture',
-        'date': 'Date',
-        'invoice_to': 'Facture à:',
-        'description': 'Description',
-        'quantity': 'Quantité',
-        'price': 'Prix',
-        'vat_percent': 'TVA%',
-        'amount': 'Montant',
-        'subtotal': 'Sous-total (hors TVA):',
-        'total_vat': 'Total TVA:',
-        'total': 'Total (TVA incluse):',
-        'greeting': 'Cordialement,',
-        'signature': 'Signature:',
-        'company_info': 'Informations sur l\'entreprise',
-        'client_info': 'Informations sur le client',
-        'service': 'Service',
-        'price_per_unit': 'Prix unitaire',
-        'add_service': 'Ajouter un service',
-        'signature_label': 'Signature',
-        'clear_signature': 'Effacer la signature',
-        'download_invoice': 'Ouvrir la facture',
-        'save_company': 'Enregistrer les informations de l\'entreprise',
-        'clear_company': 'Effacer les informations de l\'entreprise',
-        'upload_logo': 'Télécharger votre logo (optionnel)',
-        'street': 'Rue et numéro',
-        'postcode': 'Code postal',
-        'city': 'Ville',
-        'country': 'Pays',
-        'kvk': 'Numéro de registre',
-        'vat': 'Numéro de TVA',
-        'iban': 'IBAN',
-        'client_name': 'Nom du client',
-        'language': 'Langue',
-        'company_name': 'Nom de l\'entreprise',
-    },
-    'it': {
-        'title': 'Fattura veloce',
-        'invoice_number': 'Numero fattura',
-        'date': 'Data',
-        'invoice_to': 'Fattura a:',
-        'description': 'Descrizione',
-        'quantity': 'Quantità',
-        'price': 'Prezzo',
-        'vat_percent': 'IVA%',
-        'amount': 'Importo',
-        'subtotal': 'Totale parziale (escl. IVA):',
-        'total_vat': 'Totale IVA:',
-        'total': 'Totale (IVA inclusa):',
-        'greeting': 'Cordiali saluti,',
-        'signature': 'Firma:',
-        'company_info': 'Dati azienda',
-        'client_info': 'Dati cliente',
-        'service': 'Servizio',
-        'price_per_unit': 'Prezzo per unità',
-        'add_service': 'Aggiungi servizio',
-        'signature_label': 'Firma',
-        'clear_signature': 'Cancella firma',
-        'download_invoice': 'Apri fattura',
-        'save_company': 'Salva dati azienda',
-        'clear_company': 'Cancella dati azienda',
-        'upload_logo': 'Carica il tuo logo (opzionale)',
-        'street': 'Via e numero civico',
-        'postcode': 'CAP',
-        'city': 'Città',
-        'country': 'Paese',
-        'kvk': 'Numero di registro',
-        'vat': 'Numero IVA',
-        'iban': 'IBAN',
-        'client_name': 'Nome cliente',
-        'language': 'Lingua',
-        'company_name': 'Nome azienda',
-    },
-    'es': {
-        'title': 'Factura rápida',
-        'invoice_number': 'Número de factura',
-        'date': 'Fecha',
-        'invoice_to': 'Factura a:',
-        'description': 'Descripción',
-        'quantity': 'Cantidad',
-        'price': 'Precio',
-        'vat_percent': 'IVA%',
-        'amount': 'Importe',
-        'subtotal': 'Subtotal (sin IVA):',
-        'total_vat': 'Total IVA:',
-        'total': 'Total (IVA incl.):',
-        'greeting': 'Saludos cordiales,',
-        'signature': 'Firma:',
-        'company_info': 'Datos de la empresa',
-        'client_info': 'Datos del cliente',
-        'service': 'Servicio',
-        'price_per_unit': 'Precio por unidad',
-        'add_service': 'Añadir servicio',
-        'signature_label': 'Firma',
-        'clear_signature': 'Borrar firma',
-        'download_invoice': 'Abrir factura',
-        'save_company': 'Guardar datos de la empresa',
-        'clear_company': 'Borrar datos de la empresa',
-        'upload_logo': 'Sube tu logo (opcional)',
-        'street': 'Calle y número',
-        'postcode': 'Código postal',
-        'city': 'Ciudad',
-        'country': 'País',
-        'kvk': 'Número de registro',
-        'vat': 'Número de IVA',
-        'iban': 'IBAN',
-        'client_name': 'Nombre del cliente',
-        'language': 'Idioma',
-        'company_name': 'Nombre de la empresa',
-    },
-    'pt': {
-        'title': 'Fatura rápida',
-        'invoice_number': 'Número da fatura',
-        'date': 'Data',
-        'invoice_to': 'Fatura para:',
-        'description': 'Descrição',
-        'quantity': 'Quantidade',
-        'price': 'Preço',
-        'vat_percent': 'IVA%',
-        'amount': 'Valor',
-        'subtotal': 'Subtotal (sem IVA):',
-        'total_vat': 'Total IVA:',
-        'total': 'Total (com IVA):',
-        'greeting': 'Atenciosamente,',
-        'signature': 'Assinatura:',
-        'company_info': 'Dados da empresa',
-        'client_info': 'Dados do cliente',
-        'service': 'Serviço',
-        'price_per_unit': 'Preço por unidade',
-        'add_service': 'Adicionar serviço',
-        'signature_label': 'Assinatura',
-        'clear_signature': 'Limpar assinatura',
-        'download_invoice': 'Abrir fatura',
-        'save_company': 'Salvar dados da empresa',
-        'clear_company': 'Limpar dados da empresa',
-        'upload_logo': 'Faça upload do seu logo (opcional)',
-        'street': 'Rua e número',
-        'postcode': 'Código postal',
-        'city': 'Cidade',
-        'country': 'País',
-        'kvk': 'Número de registro',
-        'vat': 'Número de IVA',
-        'iban': 'IBAN',
-        'client_name': 'Nome do cliente',
-        'language': 'Idioma',
-        'company_name': 'Nome da empresa',
-    },
-    'ja': {
-        'title': 'クイック請求書',
-        'invoice_number': '請求書番号',
-        'date': '日付',
-        'invoice_to': '請求先:',
-        'description': '説明',
-        'quantity': '数量',
-        'price': '価格',
-        'vat_percent': '消費税%',
-        'amount': '金額',
-        'subtotal': '小計（税抜）:',
-        'total_vat': '消費税合計:',
-        'total': '合計（税込）:',
-        'greeting': 'よろしくお願いいたします。',
-        'signature': '署名:',
-        'company_info': '会社情報',
-        'client_info': '顧客情報',
-        'service': 'サービス',
-        'price_per_unit': '単価',
-        'add_service': 'サービス追加',
-        'signature_label': '署名',
-        'clear_signature': '署名をクリア',
-        'download_invoice': '請求書を開く',
-        'save_company': '会社情報を保存',
-        'clear_company': '会社情報をクリア',
-        'upload_logo': 'ロゴをアップロード（任意）',
-        'street': '住所',
-        'postcode': '郵便番号',
-        'city': '市区町村',
-        'country': '国',
-        'kvk': '会社登録番号',
-        'vat': '税番号',
-        'iban': 'IBAN',
-        'client_name': '顧客名',
-        'language': '言語',
-        'company_name': '会社名',
-    },
-    'zh': {
-        'title': '快速发票',
-        'invoice_number': '发票号码',
-        'date': '日期',
-        'invoice_to': '发票给:',
-        'description': '描述',
-        'quantity': '数量',
-        'price': '价格',
-        'vat_percent': '增值税%',
-        'amount': '金额',
-        'subtotal': '小计（不含税）:',
-        'total_vat': '增值税总额:',
-        'total': '总计（含税）:',
-        'greeting': '此致敬礼，',
-        'signature': '签名:',
-        'company_info': '公司信息',
-        'client_info': '客户信息',
-        'service': '服务',
-        'price_per_unit': '单价',
-        'add_service': '添加服务',
-        'signature_label': '签名',
-        'clear_signature': '清除签名',
-        'download_invoice': '打开发票',
-        'save_company': '保存公司信息',
-        'clear_company': '清除公司信息',
-        'upload_logo': '上传您的徽标（可选）',
-        'street': '街道和门牌号',
-        'postcode': '邮政编码',
-        'city': '城市',
-        'country': '国家',
-        'kvk': '公司注册号',
-        'vat': '税号',
-        'iban': 'IBAN',
-        'client_name': '客户姓名',
-        'language': '语言',
-        'company_name': '公司名称',
-    },
     'ar': {
         'title': 'فاتورة سريعة',
         'invoice_number': 'رقم الفاتورة',
@@ -345,107 +85,45 @@ translations = {
         'language': 'اللغة',
         'company_name': 'اسم الشركة',
     },
-    'es': {  # Duplicate Spanish entry removed, already added above
-        # if needed, you can remove this duplicate entry
+    'en': {
+        'title': 'Quick Invoice',
+        'invoice_number': 'Invoice Number',
+        'date': 'Date',
+        'invoice_to': 'Invoice to:',
+        'description': 'Description',
+        'quantity': 'Quantity',
+        'price': 'Price',
+        'vat_percent': 'VAT%',
+        'amount': 'Amount',
+        'subtotal': 'Subtotal (excl. VAT):',
+        'total_vat': 'Total VAT:',
+        'total': 'Total (incl. VAT):',
+        'greeting': 'Kind regards,',
+        'signature': 'Signature:',
+        'company_info': 'Company Information',
+        'client_info': 'Client Information',
+        'service': 'Service',
+        'price_per_unit': 'Price per Unit',
+        'add_service': 'Add Service',
+        'signature_label': 'Signature',
+        'clear_signature': 'Clear Signature',
+        'download_invoice': 'Open Invoice',
+        'save_company': 'Save Company Info',
+        'clear_company': 'Clear Company Info',
+        'upload_logo': 'Upload your logo (optional)',
+        'street': 'Street and Number',
+        'postcode': 'Postal Code',
+        'city': 'City',
+        'country': 'Country',
+        'kvk': 'Chamber of Commerce Number',
+        'vat': 'VAT Number',
+        'iban': 'IBAN Number',
+        'client_name': 'Client Name',
+        'language': 'Language',
+        'company_name': 'Company Name',
     }
+    # Voeg hier eventueel meer talen toe...
 }
-
-class FactuurPDF(FPDF):
-    def __init__(self, logo_stream=None, t=None):
-        super().__init__()
-        self.logo_stream = logo_stream
-        self.t = t or translations['nl']
-        self.add_font('DejaVu', '', 'fonts/DejaVuSans.ttf', uni=True)
-        self.add_font('DejaVu', 'B', 'fonts/DejaVuSans-Bold.ttf', uni=True)
-        self.set_font('DejaVu', '', 11)
-
-    def header_custom(self, bedrijfsnaam, straat, postcode, plaats, land, kvk, btw, iban):
-        if self.logo_stream:
-            try:
-                self.logo_stream.seek(0)
-                temp_logo_path = 'temp_logo.png'
-                with open(temp_logo_path, 'wb') as f:
-                    f.write(self.logo_stream.read())
-                self.image(temp_logo_path, x=10, y=8, w=40)
-                os.remove(temp_logo_path)
-            except Exception as e:
-                print(f"Fout bij laden van logo: {e}")
-        self.set_font('DejaVu', 'B', 16)
-        self.cell(0, 10, bedrijfsnaam, ln=True, align='R')
-        self.set_font('DejaVu', '', 11)
-        self.cell(0, 8, straat, ln=True, align='R')
-        self.cell(0, 8, f"{postcode} {plaats}", ln=True, align='R')
-        self.cell(0, 8, land, ln=True, align='R')
-        self.cell(0, 8, f"KvK: {kvk} | BTW: {btw}", ln=True, align='R')
-        self.cell(0, 8, f"IBAN: {iban}", ln=True, align='R')
-        self.ln(5)
-        self.line(10, self.get_y(), 200, self.get_y())
-        self.ln(10)
-
-    def factuur_body(self, factuurnummer, klantnaam, klant_straat, klant_postcode, klant_plaats, klant_land, diensten, bedrijfsnaam, handtekening_stream=None):
-        t = self.t
-        self.set_font('DejaVu', '', 11)
-        self.cell(0, 8, f"{t['invoice_number']}: {factuurnummer}", ln=True)
-        self.cell(0, 8, f"{t['date']}: {datetime.today().strftime('%d-%m-%Y')}", ln=True)
-        self.ln(5)
-        self.set_font('DejaVu', 'B', 12)
-        self.cell(0, 8, t['invoice_to'], ln=True)
-        self.set_font('DejaVu', '', 11)
-        self.cell(0, 8, klantnaam, ln=True)
-        self.cell(0, 8, klant_straat, ln=True)
-        self.cell(0, 8, f"{klant_postcode} {klant_plaats}", ln=True)
-        self.cell(0, 8, klant_land, ln=True)
-        self.ln(10)
-
-        self.set_fill_color(230, 230, 250)
-        self.set_font('DejaVu', 'B', 11)
-        self.cell(80, 10, t['description'], border=1, align='C', fill=True)
-        self.cell(20, 10, t['quantity'], border=1, align='C', fill=True)
-        self.cell(30, 10, t['price'], border=1, align='C', fill=True)
-        self.cell(20, 10, t['vat_percent'], border=1, align='C', fill=True)
-        self.cell(30, 10, t['amount'], border=1, align='C', fill=True)
-        self.ln()
-
-        self.set_font('DejaVu', '', 11)
-        subtotaal = 0
-        totaal_btw = 0
-        for dienst, aantal, prijs, btw_percentage in diensten:
-            bedrag_excl = aantal * prijs
-            btw_bedrag = bedrag_excl * (btw_percentage / 100)
-            bedrag_incl = bedrag_excl + btw_bedrag
-            self.cell(80, 10, dienst, border=1)
-            self.cell(20, 10, str(aantal), border=1, align='C')
-            self.cell(30, 10, f"{prijs:.2f}", border=1, align='R')
-            self.cell(20, 10, f"{btw_percentage}%", border=1, align='C')
-            self.cell(30, 10, f"{bedrag_incl:.2f}", border=1, align='R')
-            self.ln()
-            subtotaal += bedrag_excl
-            totaal_btw += btw_bedrag
-
-        totaal = subtotaal + totaal_btw
-        self.ln(5)
-        self.set_font('DejaVu', 'B', 12)
-        self.cell(150, 10, t['subtotal'], align='R')
-        self.cell(30, 10, f"{subtotaal:.2f} EUR", ln=True, align='R')
-        self.cell(150, 10, t['total_vat'], align='R')
-        self.cell(30, 10, f"{totaal_btw:.2f} EUR", ln=True, align='R')
-        self.cell(150, 10, t['total'], align='R')
-        self.cell(30, 10, f"{totaal:.2f} EUR", ln=True, align='R')
-        self.ln(20)
-        self.set_font('DejaVu', '', 11)
-        self.cell(0, 8, t['greeting'], ln=True)
-        self.cell(0, 8, bedrijfsnaam, ln=True)
-
-        if handtekening_stream:
-            if self.get_y() > 250:
-                self.add_page()
-            self.ln(20)
-            self.cell(0, 8, t['signature'], ln=True)
-            temp_handtekening_path = 'temp_handtekening.png'
-            with open(temp_handtekening_path, 'wb') as f:
-                f.write(handtekening_stream.getbuffer())
-            self.image(temp_handtekening_path, x=10, y=self.get_y(), w=80)
-            os.remove(temp_handtekening_path)
 
 def get_translation():
     lang = request.args.get('lang', 'nl').lower()
@@ -456,119 +134,122 @@ def get_translation():
 @app.route('/', methods=['GET'])
 def index():
     t, lang = get_translation()
+    # HTML met embedded CSS en JS (layout blijft behouden)
     html_content = f'''
 <!doctype html>
-<html lang="{lang}">
+<html lang="{lang}" dir="{'rtl' if lang=='ar' else 'ltr'}">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{t["title"]}</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
-  <style>
-    body {{
-      background: linear-gradient(135deg, #e0f7fa 0%, #ffffff 100%);
-      font-family: 'Poppins', sans-serif;
-      margin: 0; padding: 20px;
-      min-height: 100vh;
-      display: flex; align-items: center; justify-content: center;
-    }}
-    .container {{
-      width: 100%; max-width: 900px;
-      background: white;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    }}
-    h1 {{text-align: center; color: #007bff; margin-bottom: 30px;}}
-    form {{display: flex; flex-direction: column; gap: 20px;}}
-    .block {{padding: 20px; border-radius: 12px; margin-bottom: 20px; background-color: #f9f9f9;}}
-    .bedrijf {{background-color: #e6f2ff;}}
-    .klant {{background-color: #fff3e6;}}
-    label {{
-      display: block;
-      margin-top: 10px;
-      font-weight: 500;
-      font-size: 14px;
-      color: #555;
-    }}
-    input, select {{
-      width: 100%;
-      padding: 12px;
-      margin-top: 5px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-      font-size: 14px;
-      box-sizing: border-box;
-    }}
-    .dienst-block {{
-      border: 1px solid #ccc;
-      padding: 15px;
-      border-radius: 12px;
-      margin-top: 15px;
-      background-color: #f9f9f9;
-      position: relative;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    }}
-    .remove-btn {{
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background-color: red;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-    }}
-    button {{
-      padding: 15px;
-      border: none;
-      border-radius: 30px;
-      background-color: #007bff;
-      color: white;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s;
-    }}
-    button:hover {{
-      background-color: #0056b3;
-    }}
-    .button-group {{
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 15px;
-    }}
-    canvas {{
-      border: 2px solid #ccc;
-      border-radius: 8px;
-      margin-top: 10px;
-      width: 100%;
-      height: 200px;
-    }}
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{t["title"]}</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
+<style>
+  body {{
+    background: linear-gradient(135deg, #e0f7fa 0%, #ffffff 100%);
+    font-family: 'Poppins', sans-serif;
+    margin: 0; padding: 20px;
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    direction: {'rtl' if lang=='ar' else 'ltr'};
+    text-align: {'right' if lang=='ar' else 'left'};
+  }}
+  .container {{
+    width: 100%; max-width: 900px;
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  }}
+  h1 {{text-align: center; color: #007bff; margin-bottom: 30px;}}
+  form {{display: flex; flex-direction: column; gap: 20px;}}
+  .block {{padding: 20px; border-radius: 12px; margin-bottom: 20px; background-color: #f9f9f9;}}
+  .bedrijf {{background-color: #e6f2ff;}}
+  .klant {{background-color: #fff3e6;}}
+  label {{
+    display: block;
+    margin-top: 10px;
+    font-weight: 500;
+    font-size: 14px;
+    color: #555;
+  }}
+  input, select {{
+    width: 100%;
+    padding: 12px;
+    margin-top: 5px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    font-size: 14px;
+    box-sizing: border-box;
+  }}
+  .dienst-block {{
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 12px;
+    margin-top: 15px;
+    background-color: #f9f9f9;
+    position: relative;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  }}
+  .remove-btn {{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }}
+  button {{
+    padding: 15px;
+    border: none;
+    border-radius: 30px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+  }}
+  button:hover {{
+    background-color: #0056b3;
+  }}
+  .button-group {{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+  }}
+  canvas {{
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    margin-top: 10px;
+    width: 100%;
+    height: 200px;
+  }}
+  .form-grid {{
+    display: block;
+  }}
+  @media (min-width: 768px) {{
     .form-grid {{
-      display: block;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
     }}
-    @media (min-width: 768px) {{
-      .form-grid {{
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-      }}
-    }}
-    .language-select {{
-      margin-bottom: 20px;
-      font-size: 14px;
-      text-align: left;
-    }}
-  </style>
+  }}
+  .language-select {{
+    margin-bottom: 20px;
+    font-size: 14px;
+    text-align: left;
+  }}
+</style>
 </head>
 <body>
   <div class="container">
@@ -576,13 +257,6 @@ def index():
       <label for="langSelect">{t["language"]}:</label>
       <select id="langSelect" name="lang" onchange="document.getElementById('languageForm').submit()">
         <option value="nl" {'selected' if lang == 'nl' else ''}>Nederlands</option>
-        <option value="de" {'selected' if lang == 'de' else ''}>Deutsch</option>
-        <option value="fr" {'selected' if lang == 'fr' else ''}>Français</option>
-        <option value="it" {'selected' if lang == 'it' else ''}>Italiano</option>
-        <option value="es" {'selected' if lang == 'es' else ''}>Español</option>
-        <option value="pt" {'selected' if lang == 'pt' else ''}>Português</option>
-        <option value="ja" {'selected' if lang == 'ja' else ''}>日本語</option>
-        <option value="zh" {'selected' if lang == 'zh' else ''}>中文</option>
         <option value="ar" {'selected' if lang == 'ar' else ''}>العربية</option>
         <option value="en" {'selected' if lang == 'en' else ''}>English</option>
       </select>
@@ -774,29 +448,39 @@ def generate_pdf():
             index += 1
 
         logo_file = request.files.get('logo')
-        logo_stream = None
+        logo_data = None
         if logo_file and logo_file.filename:
-            logo_stream = io.BytesIO(logo_file.read())
-            logo_stream.seek(0)
+            logo_data = base64.b64encode(logo_file.read()).decode('utf-8')
 
         handtekening_data = request.form.get('handtekening')
-        handtekening_stream = None
-        if handtekening_data and handtekening_data.startswith("data:image/png;base64,"):
-            header, encoded = handtekening_data.split(",", 1)
-            handtekening_bytes = base64.b64decode(encoded)
-            handtekening_stream = io.BytesIO(handtekening_bytes)
 
         t, lang = get_translation()
 
-        pdf = FactuurPDF(logo_stream, t)
-        pdf.add_page()
-        pdf.header_custom(bedrijfsnaam, straat, postcode, plaats, land, kvk, btw, iban)
-        pdf.factuur_body(factuurnummer, klantnaam, klant_straat, klant_postcode, klant_plaats, klant_land, diensten, bedrijfsnaam, handtekening_stream)
+        # Render HTML voor PDF
+        html_invoice = render_template_string(PDF_TEMPLATE, t=t,
+                                              factuurnummer=factuurnummer,
+                                              bedrijfsnaam=bedrijfsnaam,
+                                              straat=straat,
+                                              postcode=postcode,
+                                              plaats=plaats,
+                                              land=land,
+                                              kvk=kvk,
+                                              btw=btw,
+                                              iban=iban,
+                                              klantnaam=klantnaam,
+                                              klant_straat=klant_straat,
+                                              klant_postcode=klant_postcode,
+                                              klant_plaats=klant_plaats,
+                                              klant_land=klant_land,
+                                              diensten=diensten,
+                                              logo_data=logo_data,
+                                              handtekening_data=handtekening_data,
+                                              lang=lang)
 
-        pdf_data = pdf.output(dest='S')  # bytes
+        pdf_file = HTML(string=html_invoice).write_pdf(stylesheets=[CSS(string=PDF_CSS)])
 
         pdf_id = str(uuid.uuid4())
-        pdf_storage[pdf_id] = pdf_data
+        pdf_storage[pdf_id] = pdf_file
 
         return redirect(url_for('serve_pdf', pdf_id=pdf_id, lang=lang))
     except Exception as e:
@@ -808,12 +492,155 @@ def serve_pdf(pdf_id):
     if not pdf_data:
         abort(404)
     lang = request.args.get('lang', 'nl')
-    return send_file(
-        io.BytesIO(pdf_data),
-        mimetype='application/pdf',
-        as_attachment=False,
-        download_name='factuur.pdf'
-    )
+    return send_file(io.BytesIO(pdf_data),
+                     mimetype='application/pdf',
+                     as_attachment=False,
+                     download_name='factuur.pdf')
+
+# HTML template voor PDF
+PDF_TEMPLATE = '''
+<!DOCTYPE html>
+<html lang="{{ lang }}" dir="{{ 'rtl' if lang=='ar' else 'ltr' }}">
+<head>
+<meta charset="UTF-8" />
+<style>
+  body {{
+    font-family: Arial, sans-serif;
+    font-size: 12pt;
+    margin: 30px;
+    direction: {{ 'rtl' if lang=='ar' else 'ltr' }};
+    text-align: {{ 'right' if lang=='ar' else 'left' }};
+  }}
+  .header {{
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }}
+  .logo {{
+    max-width: 150px;
+  }}
+  .company-details {{
+    float: right;
+    text-align: right;
+  }}
+  .invoice-title {{
+    font-size: 18pt;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }}
+  table {{
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }}
+  th, td {{
+    border: 1px solid #ddd;
+    padding: 8px;
+  }}
+  th {{
+    background-color: #e6f2ff;
+    text-align: center;
+  }}
+  .totals td {{
+    border: none;
+  }}
+  .signature {{
+    margin-top: 50px;
+  }}
+  .signature img {{
+    max-width: 200px;
+    height: auto;
+  }}
+  .clear {{
+    clear: both;
+  }}
+</style>
+</head>
+<body>
+  <div class="header">
+    {% if logo_data %}
+      <img src="data:image/png;base64,{{ logo_data }}" class="logo" />
+    {% endif %}
+    <div class="company-details">
+      <div><strong>{{ bedrijfsnaam }}</strong></div>
+      <div>{{ straat }}</div>
+      <div>{{ postcode }} {{ plaats }}</div>
+      <div>{{ land }}</div>
+      <div>KvK: {{ kvk }} | BTW: {{ btw }}</div>
+      <div>IBAN: {{ iban }}</div>
+    </div>
+    <div class="clear"></div>
+  </div>
+
+  <div class="invoice-title">{{ t.invoice_number }}: {{ factuurnummer }}</div>
+  <div>{{ t.date }}: {{ now }}</div>
+
+  <h3>{{ t.invoice_to }}</h3>
+  <div>{{ klantnaam }}</div>
+  <div>{{ klant_straat }}</div>
+  <div>{{ klant_postcode }} {{ klant_plaats }}</div>
+  <div>{{ klant_land }}</div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>{{ t.description }}</th>
+        <th>{{ t.quantity }}</th>
+        <th>{{ t.price }}</th>
+        <th>{{ t.vat_percent }}</th>
+        <th>{{ t.amount }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% set subtotal = 0 %}
+      {% set total_vat = 0 %}
+      {% for dienst, aantal, prijs, btw_pct in diensten %}
+        {% set excl = aantal * prijs %}
+        {% set vat_amount = excl * btw_pct / 100 %}
+        {% set incl = excl + vat_amount %}
+        <tr>
+          <td>{{ dienst }}</td>
+          <td style="text-align:center;">{{ aantal }}</td>
+          <td style="text-align:right;">{{ "%.2f"|format(prijs) }}</td>
+          <td style="text-align:center;">{{ btw_pct }}%</td>
+          <td style="text-align:right;">{{ "%.2f"|format(incl) }}</td>
+        </tr>
+        {% set subtotal = subtotal + excl %}
+        {% set total_vat = total_vat + vat_amount %}
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <table class="totals" style="width: 300px; float: right;">
+    <tr><td><strong>{{ t.subtotal }}</strong></td><td style="text-align:right;">{{ "%.2f"|format(subtotal) }} EUR</td></tr>
+    <tr><td><strong>{{ t.total_vat }}</strong></td><td style="text-align:right;">{{ "%.2f"|format(total_vat) }} EUR</td></tr>
+    <tr><td><strong>{{ t.total }}</strong></td><td style="text-align:right;">{{ "%.2f"|format(subtotal + total_vat) }} EUR</td></tr>
+  </table>
+  <div style="clear: both;"></div>
+
+  <div class="greeting" style="margin-top: 50px;">
+    {{ t.greeting }}<br />
+    {{ bedrijfsnaam }}
+  </div>
+
+  {% if handtekening_data %}
+  <div class="signature">
+    <div><strong>{{ t.signature }}</strong></div>
+    <img src="{{ handtekening_data }}" alt="Signature" />
+  </div>
+  {% endif %}
+</body>
+</html>
+'''
+
+PDF_CSS = '''
+@page { size: A4; margin: 30px; }
+body { font-family: Arial, sans-serif; font-size: 12pt; }
+'''
+
+@app.context_processor
+def inject_now():
+    return {'now': datetime.today().strftime('%d-%m-%Y')}
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
