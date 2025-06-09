@@ -12,6 +12,7 @@ pdf_storage = {}
 
 translations = {
     'nl': {
+        'language_name': 'Nederlands',
         'title': 'Snelfactuurtje',
         'invoice_number': 'Factuurnummer',
         'date': 'Datum',
@@ -47,9 +48,9 @@ translations = {
         'client_name': 'Klantnaam',
         'language': 'Taal',
         'company_name': 'Bedrijfsnaam',
-        'language_name': 'Nederlands',
     },
     'en': {
+        'language_name': 'English',
         'title': 'Quick Invoice',
         'invoice_number': 'Invoice Number',
         'date': 'Date',
@@ -85,9 +86,9 @@ translations = {
         'client_name': 'Client Name',
         'language': 'Language',
         'company_name': 'Company Name',
-        'language_name': 'English',
     },
     'ar': {
+        'language_name': 'العربية',
         'title': 'فاتورة سريعة',
         'invoice_number': 'رقم الفاتورة',
         'date': 'التاريخ',
@@ -123,9 +124,9 @@ translations = {
         'client_name': 'اسم العميل',
         'language': 'اللغة',
         'company_name': 'اسم الشركة',
-        'language_name': 'العربية',
     },
     'de': {
+        'language_name': 'Deutsch',
         'title': 'Schnellrechnung',
         'invoice_number': 'Rechnungsnummer',
         'date': 'Datum',
@@ -161,9 +162,9 @@ translations = {
         'client_name': 'Kundenname',
         'language': 'Sprache',
         'company_name': 'Firmenname',
-        'language_name': 'Deutsch',
     },
     'fr': {
+        'language_name': 'Français',
         'title': 'Facture rapide',
         'invoice_number': 'Numéro de facture',
         'date': 'Date',
@@ -199,9 +200,9 @@ translations = {
         'client_name': 'Nom du client',
         'language': 'Langue',
         'company_name': 'Nom de l\'entreprise',
-        'language_name': 'Français',
     },
     'es': {
+        'language_name': 'Español',
         'title': 'Factura rápida',
         'invoice_number': 'Número de factura',
         'date': 'Fecha',
@@ -237,9 +238,9 @@ translations = {
         'client_name': 'Nombre del cliente',
         'language': 'Idioma',
         'company_name': 'Nombre de la empresa',
-        'language_name': 'Español',
     },
     'pt': {
+        'language_name': 'Português',
         'title': 'Fatura rápida',
         'invoice_number': 'Número da fatura',
         'date': 'Data',
@@ -275,9 +276,9 @@ translations = {
         'client_name': 'Nome do cliente',
         'language': 'Idioma',
         'company_name': 'Nome da empresa',
-        'language_name': 'Português',
     },
     'sv': {
+        'language_name': 'Svenska',
         'title': 'Snabbfaktura',
         'invoice_number': 'Fakturanummer',
         'date': 'Datum',
@@ -313,9 +314,9 @@ translations = {
         'client_name': 'Kundnamn',
         'language': 'Språk',
         'company_name': 'Företagsnamn',
-        'language_name': 'Svenska',
     },
     'tr': {
+        'language_name': 'Türkçe',
         'title': 'Hızlı Fatura',
         'invoice_number': 'Fatura Numarası',
         'date': 'Tarih',
@@ -351,9 +352,9 @@ translations = {
         'client_name': 'Müşteri Adı',
         'language': 'Dil',
         'company_name': 'Şirket Adı',
-        'language_name': 'Türkçe',
     },
     'it': {
+        'language_name': 'Italiano',
         'title': 'Fattura veloce',
         'invoice_number': 'Numero fattura',
         'date': 'Data',
@@ -389,19 +390,17 @@ translations = {
         'client_name': 'Nome cliente',
         'language': 'Lingua',
         'company_name': 'Nome azienda',
-        'language_name': 'Italiano',
     }
 }
+
+def format_currency(value):
+    return f"{value:,.2f} €".replace(',', 'X').replace('.', ',').replace('X', '.')
 
 def get_translation():
     lang = request.args.get('lang', 'nl').lower()
     if lang not in translations:
         lang = 'nl'
     return translations[lang], lang
-
-def format_currency(value):
-    # Format number with 2 decimals and Dutch format (comma decimal)
-    return f"€ {value:,.2f}".replace(',', 'X').replace('.', ',').replace('X', '.')
 
 @app.route('/', methods=['GET'])
 def index():
@@ -478,11 +477,11 @@ def generate_pdf():
                                               logo_data=logo_data,
                                               handtekening_data=handtekening_data,
                                               lang=lang,
+                                              format_currency=format_currency,
                                               enumerate=enumerate,
                                               datetime=datetime,
                                               timedelta=timedelta,
-                                              now=datetime.today().strftime('%d-%m-%Y'),
-                                              format_currency=format_currency)
+                                              now=datetime.today().strftime('%d-%m-%Y'))
 
         pdf_file = HTML(string=html_invoice).write_pdf(stylesheets=[CSS(string=PDF_CSS)])
 
@@ -776,13 +775,13 @@ INDEX_HTML = '''
     const div = document.createElement('div');
     div.className = 'dienst-block';
     div.innerHTML = `
-      <button type='button' class='remove-btn' onclick='this.parentNode.remove()' aria-label="Remove service">×</button>
+      <button type='button' class='remove-btn' onclick='this.parentNode.remove()'>×</button>
       <label>{{ t.service }}:</label>
       <input name='dienst_${dienstIndex}' required />
       <label>{{ t.quantity }}:</label>
-      <input name='aantal_${dienstIndex}' type='number' min="1" required />
+      <input name='aantal_${dienstIndex}' type='number' required />
       <label>{{ t.price_per_unit }}:</label>
-      <input name='prijs_${dienstIndex}' type='number' step='0.01' min="0" required />
+      <input name='prijs_${dienstIndex}' type='number' step='0.01' required />
       <label>{{ t.vat_percent }}:</label>
       <select name='btw_${dienstIndex}'>
         <option value='0'>0%</option>
@@ -792,6 +791,7 @@ INDEX_HTML = '''
     `;
     container.appendChild(div);
     dienstIndex++;
+    applyBlurEffectToInputs(div);
   }
 
   var canvas = document.getElementById('signature-pad');
@@ -961,6 +961,46 @@ PDF_HTML = '''
     border-top: 2px solid #000;
     font-weight: bold;
   }
+  /* RTL fixes for Arabic */
+  [dir="rtl"] {
+    direction: rtl;
+    unicode-bidi: embed;
+  }
+  [dir="rtl"] .header {
+    flex-direction: row-reverse;
+    text-align: right;
+  }
+  [dir="rtl"] .company-details {
+    text-align: right;
+  }
+  [dir="rtl"] .client-details {
+    text-align: right;
+  }
+  [dir="rtl"] .invoice-info {
+    text-align: right;
+  }
+  [dir="rtl"] table th, [dir="rtl"] table td {
+    text-align: right !important;
+    padding-right: 15px;
+    padding-left: 5px;
+  }
+  [dir="rtl"] .totals-table {
+    float: left;
+  }
+  .signature {
+    margin-top: 50px;
+    border: 1px solid #000;
+    width: 300px;
+    height: 80px;
+  }
+  .signature-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  .signature img {
+    width: 100%;
+    height: 80px;
+  }
 </style>
 </head>
 <body>
@@ -1015,9 +1055,9 @@ PDF_HTML = '''
         <tr>
           <td>{{ i }}</td>
           <td>{{ dienst }}</td>
-          <td class="right">{{ format_currency(prijs) }}</td>
+          <td class="right">{{ "%.2f"|format(prijs).replace(".", ",") }} €</td>
           <td class="right">{{ aantal }}</td>
-          <td class="right">{{ format_currency(incl) }}</td>
+          <td class="right">{{ "%.2f"|format(incl).replace(".", ",") }} €</td>
           <td class="right">{{ btw_pct }}%</td>
         </tr>
       {% endfor %}
@@ -1027,24 +1067,24 @@ PDF_HTML = '''
   <table class="totals-table">
     <tr>
       <td>{{ t.subtotal }}</td>
-      <td class="right">{{ format_currency(subtotal) }}</td>
+      <td class="right">{{ "%.2f"|format(subtotal).replace(".", ",") }} €</td>
     </tr>
     <tr>
-      <td>BTW:</td>
-      <td class="right">{{ format_currency(total_vat) }}</td>
+      <td>{{ t.total_vat }}</td>
+      <td class="right">{{ "%.2f"|format(total_vat).replace(".", ",") }} €</td>
     </tr>
     <tr class="total-row">
       <td>{{ t.total }}</td>
-      <td class="right">{{ format_currency(total) }}</td>
+      <td class="right">{{ "%.2f"|format(total).replace(".", ",") }} €</td>
     </tr>
   </table>
 
-  {% if handtekening_data %}
-  <div style="margin-top: 40px;">
-    <strong>{{ t.signature }}</strong><br />
-    <img src="{{ handtekening_data }}" alt="Handtekening" style="max-width: 300px; border: 1px solid #000;"/>
+  <div class="signature-label">{{ t.signature }}</div>
+  <div class="signature">
+    {% if handtekening_data %}
+      <img src="{{ handtekening_data }}" alt="Handtekening" />
+    {% endif %}
   </div>
-  {% endif %}
 
 </body>
 </html>
@@ -1064,7 +1104,6 @@ def inject_now():
         'now': datetime.today().strftime('%d-%m-%Y'),
         'datetime': datetime,
         'timedelta': timedelta,
-        'enumerate': enumerate,
     }
 
 if __name__ == '__main__':
