@@ -8,7 +8,6 @@ from flask import Flask, request, render_template_string, send_file, redirect, u
 from weasyprint import HTML, CSS
 
 app = Flask(__name__)
-app.debug = True  # Debug aan voor foutmeldingen tijdens development
 pdf_storage = {}
 
 translations = {
@@ -86,7 +85,7 @@ translations = {
         'language': 'Language',
         'company_name': 'Company Name',
     },
-    # Voeg hier je andere talen toe zoals je al had...
+    # Voeg hier alle andere talen toe zoals in je oorspronkelijke code
 }
 
 def get_translation():
@@ -98,45 +97,36 @@ def get_translation():
 @app.route('/', methods=['GET'])
 def index():
     t, lang = get_translation()
-    return render_template_string(INDEX_HTML, t=t, lang=lang)
+    return render_template_string(INDEX_HTML, t=t, lang=lang, translations=translations)
 
 @app.route('/generate', methods=['POST'])
 def generate_pdf():
     try:
         t, lang = get_translation()
 
-        factuurnummer = request.form.get('factuurnummer')
-        bedrijfsnaam = request.form.get('bedrijfsnaam')
-        straat = request.form.get('straat')
-        postcode = request.form.get('postcode')
-        plaats = request.form.get('plaats')
-        land = request.form.get('land')
-        kvk = request.form.get('kvk')
-        btw = request.form.get('btw')
-        iban = request.form.get('iban')
+        factuurnummer = request.form['factuurnummer']
+        bedrijfsnaam = request.form['bedrijfsnaam']
+        straat = request.form['straat']
+        postcode = request.form['postcode']
+        plaats = request.form['plaats']
+        land = request.form['land']
+        kvk = request.form['kvk']
+        btw = request.form['btw']
+        iban = request.form['iban']
 
-        klantnaam = request.form.get('klantnaam')
-        klant_straat = request.form.get('klant_straat')
-        klant_postcode = request.form.get('klant_postcode')
-        klant_plaats = request.form.get('klant_plaats')
-        klant_land = request.form.get('klant_land')
+        klantnaam = request.form['klantnaam']
+        klant_straat = request.form['klant_straat']
+        klant_postcode = request.form['klant_postcode']
+        klant_plaats = request.form['klant_plaats']
+        klant_land = request.form['klant_land']
 
         diensten = []
         index = 0
         while f'dienst_{index}' in request.form:
             dienst = request.form.get(f'dienst_{index}')
-            try:
-                aantal = int(request.form.get(f'aantal_{index}', 1))
-            except:
-                aantal = 1
-            try:
-                prijs = float(request.form.get(f'prijs_{index}', 0))
-            except:
-                prijs = 0.0
-            try:
-                btw_percentage = float(request.form.get(f'btw_{index}', 21))
-            except:
-                btw_percentage = 21
+            aantal = int(request.form.get(f'aantal_{index}', 1))
+            prijs = float(request.form.get(f'prijs_{index}', 0))
+            btw_percentage = float(request.form.get(f'btw_{index}', 21))
             diensten.append((dienst, aantal, prijs, btw_percentage))
             index += 1
 
@@ -175,9 +165,7 @@ def generate_pdf():
 
         return redirect(url_for('serve_pdf', pdf_id=pdf_id, lang=lang))
     except Exception as e:
-        import traceback
-        traceback.print_exc()
-        abort(500, description=f"Fout bij verwerken van factuur: {e}")
+        abort(400, description=f"Fout bij verwerken van factuur: {e}")
 
 @app.route('/pdf/<pdf_id>', methods=['GET'])
 def serve_pdf(pdf_id):
@@ -190,13 +178,7 @@ def serve_pdf(pdf_id):
                      as_attachment=False,
                      download_name='factuur.pdf')
 
-@app.context_processor
-def inject_now():
-    return {'now': datetime.today().strftime('%d-%m-%Y')}
-
-# Vervang hieronder door jouw originele INDEX_HTML, PDF_HTML en PDF_CSS strings
-
-INDEX_HTML = ''' 
+INDEX_HTML = '''
 <!doctype html>
 <html lang="{{ lang }}" dir="{{ 'rtl' if lang == 'ar' else 'ltr' }}">
 <head>
@@ -317,19 +299,9 @@ INDEX_HTML = '''
     <form id="languageForm" class="language-select" method="GET" action="/">
       <label for="langSelect">{{ t.language }}:</label>
       <select id="langSelect" name="lang" onchange="document.getElementById('languageForm').submit()">
-        {% for code, _ in translations.items() %}
-        <option value="{{ code }}" {% if lang == code %}selected{% endif %}>{{ code.upper() }}</option>
+        {% for key in translations %}
+          <option value="{{ key }}" {% if lang == key %}selected{% endif %}>{{ translations[key].title }}</option>
         {% endfor %}
-        <option value="nl" {% if lang == 'nl' %}selected{% endif %}>Nederlands</option>
-        <option value="de" {% if lang == 'de' %}selected{% endif %}>Deutsch</option>
-        <option value="fr" {% if lang == 'fr' %}selected{% endif %}>Français</option>
-        <option value="es" {% if lang == 'es' %}selected{% endif %}>Español</option>
-        <option value="pt" {% if lang == 'pt' %}selected{% endif %}>Português</option>
-        <option value="sv" {% if lang == 'sv' %}selected{% endif %}>Svenska</option>
-        <option value="tr" {% if lang == 'tr' %}selected{% endif %}>Türkçe</option>
-        <option value="it" {% if lang == 'it' %}selected{% endif %}>Italiano</option>
-        <option value="ar" {% if lang == 'ar' %}selected{% endif %}>العربية</option>
-        <option value="en" {% if lang == 'en' %}selected{% endif %}>English</option>
       </select>
     </form>
 
@@ -630,6 +602,10 @@ body {
   font-size: 12pt;
 }
 '''
+
+@app.context_processor
+def inject_now():
+    return {'now': datetime.today().strftime('%d-%m-%Y')}
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
