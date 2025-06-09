@@ -3,7 +3,7 @@ import os
 import io
 import base64
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import Flask, request, render_template_string, send_file, redirect, url_for, abort
 from weasyprint import HTML, CSS
 
@@ -873,53 +873,74 @@ PDF_HTML = '''
 <style>
   @page { size: A4; margin: 30px; }
   body {
-    font-family: "Noto Sans", "Arial Unicode MS", Arial, sans-serif;
+    font-family: "Arial", sans-serif;
     font-size: 12pt;
     direction: {{ 'rtl' if lang == 'ar' else 'ltr' }};
-    text-align: {{ 'right' if lang == 'ar' else 'left' }};
+    color: #000;
   }
   .header {
-    border-bottom: 2px solid #007bff;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-    overflow: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
   }
   .logo {
-    max-width: 150px;
-    float: left;
+    max-width: 180px;
   }
   .company-details {
-    float: right;
     text-align: right;
+    font-size: 10pt;
+    line-height: 1.4;
   }
-  .invoice-title {
-    font-size: 18pt;
-    font-weight: bold;
-    margin-bottom: 20px;
-    clear: both;
+  .client-details {
+    margin-bottom: 30px;
+    font-size: 11pt;
+    line-height: 1.4;
+  }
+  .invoice-info {
+    text-align: right;
+    font-size: 10pt;
+    margin-bottom: 30px;
+  }
+  h1 {
+    font-size: 20pt;
+    margin-bottom: 15px;
   }
   table {
     width: 100%;
     border-collapse: collapse;
+    font-size: 11pt;
     margin-bottom: 20px;
   }
   th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
+    border-bottom: 1px solid #ccc;
+    padding: 8px 10px;
   }
   th {
-    background-color: #e6f2ff;
-    text-align: center;
+    text-align: left;
+    font-weight: bold;
+    border-bottom: 2px solid #000;
   }
-  .totals td {
+  td.right, th.right {
+    text-align: right;
+  }
+  tfoot td {
     border: none;
+    padding-top: 10px;
+    font-weight: bold;
   }
-  .signature {
-    margin-top: 50px;
+  .totals-table {
+    width: 300px;
+    float: right;
+    border-collapse: collapse;
+    font-size: 11pt;
   }
-  .signature img {
-    max-width: 200px;
-    height: auto;
+  .totals-table td {
+    padding: 6px 10px;
+  }
+  .totals-table tr.total-row td {
+    border-top: 2px solid #000;
+    font-weight: bold;
   }
 </style>
 </head>
@@ -927,71 +948,78 @@ PDF_HTML = '''
   <div class="header">
     {% if logo_data %}
       <img src="data:image/png;base64,{{ logo_data }}" class="logo" />
+    {% else %}
+      <div><strong>{{ bedrijfsnaam }}</strong></div>
     {% endif %}
     <div class="company-details">
-      <div><strong>{{ bedrijfsnaam }}</strong></div>
+      <div>{{ bedrijfsnaam }}</div>
       <div>{{ straat }}</div>
       <div>{{ postcode }} {{ plaats }}</div>
       <div>{{ land }}</div>
-      <div>KvK: {{ kvk }} | BTW: {{ btw }}</div>
+      <div>KvK: {{ kvk }}</div>
+      <div>BTW: {{ btw }}</div>
       <div>IBAN: {{ iban }}</div>
     </div>
   </div>
 
-  <div class="invoice-title">{{ t.invoice_number }}: {{ factuurnummer }}</div>
-  <div>{{ t.date }}: {{ now }}</div>
+  <div class="client-details">
+    <strong>{{ klantnaam }}</strong><br />
+    {{ klant_straat }}<br />
+    {{ klant_postcode }} {{ klant_plaats }}<br />
+    {{ klant_land }}
+  </div>
 
-  <h3>{{ t.invoice_to }}</h3>
-  <div>{{ klantnaam }}</div>
-  <div>{{ klant_straat }}</div>
-  <div>{{ klant_postcode }} {{ klant_plaats }}</div>
-  <div>{{ klant_land }}</div>
+  <div class="invoice-info">
+    <div><strong>{{ t.invoice_number }}:</strong> {{ factuurnummer }}</div>
+    <div><strong>{{ t.date }}:</strong> {{ now }}</div>
+    <div><strong>Vervaldatum:</strong> {{ (datetime.strptime(now, '%d-%m-%Y') + timedelta(days=30)).strftime('%d-%m-%Y') }}</div>
+  </div>
+
+  <h1>FACTUUR</h1>
 
   <table>
     <thead>
       <tr>
-        <th>{{ t.description }}</th>
-        <th>{{ t.quantity }}</th>
-        <th>{{ t.price }}</th>
-        <th>{{ t.vat_percent }}</th>
-        <th>{{ t.amount }}</th>
+        <th style="width:5%;">#</th>
+        <th style="width:45%;">{{ t.description }}</th>
+        <th class="right" style="width:15%;">{{ t.price }}</th>
+        <th class="right" style="width:15%;">{{ t.quantity }}</th>
+        <th class="right" style="width:20%;">{{ t.amount }}</th>
+        <th class="right" style="width:10%;">{{ t.vat_percent }}</th>
       </tr>
     </thead>
     <tbody>
-      {% for dienst, aantal, prijs, btw_pct in diensten %}
+      {% for i, (dienst, aantal, prijs, btw_pct) in enumerate(diensten, start=1) %}
         {% set excl = aantal * prijs %}
         {% set vat_amount = excl * btw_pct / 100 %}
         {% set incl = excl + vat_amount %}
         <tr>
+          <td>{{ i }}</td>
           <td>{{ dienst }}</td>
-          <td style="text-align:center;">{{ aantal }}</td>
-          <td style="text-align:right;">{{ "%.2f"|format(prijs) }}</td>
-          <td style="text-align:center;">{{ btw_pct }}%</td>
-          <td style="text-align:right;">{{ "%.2f"|format(incl) }}</td>
+          <td class="right">€ {{ '%.2f'|format(prijs).replace('.', ',') }}</td>
+          <td class="right">{{ aantal }}</td>
+          <td class="right">€ {{ '%.2f'|format(incl).replace('.', ',') }}</td>
+          <td class="right">{{ btw_pct }}%</td>
         </tr>
       {% endfor %}
     </tbody>
   </table>
 
-  <table class="totals" style="width: 300px; float: right;">
-    <tr><td><strong>{{ t.subtotal }}</strong></td><td style="text-align:right;">{{ "%.2f"|format(subtotal) }} EUR</td></tr>
-    <tr><td><strong>{{ t.total_vat }}</strong></td><td style="text-align:right;">{{ "%.2f"|format(total_vat) }} EUR</td></tr>
-    <tr><td><strong>{{ t.total }}</strong></td><td style="text-align:right;">{{ "%.2f"|format(total) }} EUR</td></tr>
+  <table class="totals-table">
+    <tr>
+      <td>Subtotaal (excl. BTW):</td>
+      <td class="right">€ {{ '%.2f'|format(subtotal).replace('.', ',') }}</td>
+    </tr>
+    <tr>
+      <td>BTW:</td>
+      <td class="right">€ {{ '%.2f'|format(total_vat).replace('.', ',') }}</td>
+    </tr>
+    <tr class="total-row">
+      <td>Totaal (incl. BTW):</td>
+      <td class="right">€ {{ '%.2f'|format(total).replace('.', ',') }}</td>
+    </tr>
   </table>
 
-  <div style="clear: both;"></div>
-
-  <div class="greeting" style="margin-top: 50px;">
-    {{ t.greeting }}<br />
-    {{ bedrijfsnaam }}
-  </div>
-
-  {% if handtekening_data %}
-  <div class="signature">
-    <div><strong>{{ t.signature }}</strong></div>
-    <img src="{{ handtekening_data }}" alt="Signature" />
-  </div>
-  {% endif %}
 </body>
 </html>
 '''
@@ -999,14 +1027,18 @@ PDF_HTML = '''
 PDF_CSS = '''
 @page { size: A4; margin: 30px; }
 body {
-  font-family: "Noto Sans", "Arial Unicode MS", Arial, sans-serif;
+  font-family: "Arial", sans-serif;
   font-size: 12pt;
 }
 '''
 
 @app.context_processor
 def inject_now():
-    return {'now': datetime.today().strftime('%d-%m-%Y')}
+    return {
+        'now': datetime.today().strftime('%d-%m-%Y'),
+        'datetime': datetime,
+        'timedelta': timedelta,
+    }
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
